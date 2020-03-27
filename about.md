@@ -10,15 +10,15 @@ key: page-about
 
 **Bio**
 
-I am Zhou Qin, an algorithm engineer interested in graph neural networks, distributed systems, and functional programming. I graduated from Cornell University with a master's degree in computer science in May 2018, and then joined Alibaba Group, working with the commodity risk management team. Before that, I achieved my bachelor's degree (also major in computer science) in South China University of Technology. 
+I am Zhou Qin, an algorithm engineer interested in graph neural networks, distributed systems, and functional programming. I graduated from Cornell University with a master's degree in computer science in May 2018 and then joined Alibaba Group, working with the data and algorithms team in the security department. Before that, I achieved my bachelor's degree (also major in computer science) in the South China University of Technology. 
 
-Personally, I'd like to do some in-depth research beneath a machine learning model (i.e. seeking mathematical explanations). As a member of editorial board for the open-source project [PumpkinBook](https://datawhalechina.github.io/pumpkin-book/#/), I am in charge of the content and quality of Chapter 8 to Chaper 16.
+Personally, I'd like to do some in-depth research beneath a machine learning model (i.e., seeking mathematical explanations). As a member of the editorial board for the open-source project [PumpkinBook](https://datawhalechina.github.io/pumpkin-book/#/), I am in charge of the content and quality from Chapter 8 to Chapter 16.
 
-I am now mainly focusing on implementing large scale distributed graph nerual network frameworks, and applying graph neural networks on risk control scenario.
+My work mainly focuses on applying graph neural network algorithms to identify risk commodities/buyers/sellers. We have published a [paper](https://arxiv.org/abs/1908.10679) introducing our experience in applying gnn algorithms for spam review detection on Xianyu scenario.
 
-Check my [Resume](https://github.com/archwalker/archwalker.github.io/blob/master/_posts/Curriculum_Vitae.pdf) for more details, and feel free to contact me through csarchwalker `<AT>` gmail `<DOT>` com if you have any questions.
+To deal with extremely large scale graph data in Alibaba, I also participate in implementing a large scale distributed graph neural network framework [graph-learn](https://github.com/alibaba/graph-learn), which is an open-source project on GitHub.
 
-
+Check my [Resume](https://github.com/archwalker/archwalker.github.io/blob/master/_posts/Curriculum_Vitae.pdf) for more details, and feel free to contact me through csarchwalker <AT> gmail <DOT> com if you have any questions.
 
 **Publications**
 
