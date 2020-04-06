@@ -13,7 +13,7 @@ I am Zhou Qin, an algorithm engineer interested in graph neural networks, distri
 
 Personally, I'd like to do some in-depth research beneath a machine learning model (i.e. seeking mathematical explanations). I am now mainly focusing on applying graph neural networks into our commodity risk management business scenario.
 
-Free to contact me through csarchwalker `<AT>` gmail `<DOT>` com to talk about anything interesting on graph neural networks, etc.
+Feel free to contact me through csarchwalker `<AT>` gmail `<DOT>` com to talk about anything interesting on graph neural networks, etc.
 
 
 
