@@ -48,4 +48,5 @@ date: 2019-06-02 12:00:00 +08:00
 2019-07-18："无监督学习模块"
 
 - [Graph Pretrain 0](https://archwalker.github.io/blog/2019/07/07/GNN-Pretrain-0.html)
+- [Graph Pretrain 1](https://archwalker.github.io/blog/2019/08/08/GNN-Pretraining-1.html)
 

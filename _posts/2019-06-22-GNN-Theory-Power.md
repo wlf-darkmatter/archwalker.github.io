@@ -9,6 +9,8 @@ date: 2019-06-22 12:00:00 +08:00
 ---
 ## 引言
 
+**此为原创文章，未经许可，禁止转载**
+
 前面的文章中，我们介绍了GNN的三个基本模型GCN、GraphSAGE、GAT，分析了经典的GCN逐层传播公式是如何由谱图卷积推导而来的。GNN模型现在正成为学术研究的热点话题，那么我们不经想问，GNN模型到底有多强呢？之前的[文章](https://archwalker.github.io/blog/2019/06/22/GNN-Theory-WL.html)我们介绍了用来衡量GNN表达能力的算法—Weisfeiler-Leman，这篇文章我们将以该算法为基础，向大家介绍ICLR 2019的oral论文 [How powerful are graph neural networks](http://arxiv.org/abs/1810.00826) 。
 
 ## 图神经网络 Graph Neural Network

@@ -9,6 +9,8 @@ date: 2019-08-08 12:00:00 +08:00
 ---
 ## 引言
 
+**此为原创文章，未经许可，禁止转载**
+
 前一篇博文[GNN 教程：图上的预训练任务上篇](https://archwalker.github.io/blog/2019/07/18/GNN-Pretain-0.html)已经向大家介绍了一种图上预训练的方式，通过设计边重建、Centrality Score Ranking、保留图簇信息三种图预训练任务来生成节点embedding，以从局部到全局捕获节点的图结构信息；然后，将预训练模型生成的节点Embedding在特定的任务中做微调，最终应用于该特定任务中。
 
 本博文将向大家介绍来自论文 [Pre-training Graph Neural Networks](https://arxiv.org/abs/1905.12265) 的另一种预训练方式，该论文重点讨论下面三个问题：
