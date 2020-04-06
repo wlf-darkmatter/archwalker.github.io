@@ -78,6 +78,10 @@ GAM方法在输入图进行一系列的随机游走，并且通过RNN对已访�
 
 ## Reference
 [Attention Models in Graphs: A Survey](http://arxiv.org/abs/1807.07984)
+
 [Graph Attention Networks](http://arxiv.org/abs/1710.10903)
+
 [Attention-based Graph Neural Network for Semi-supervised Learning](http://arxiv.org/abs/1803.03735)
+
 [Graph Classification using Structural Attention](http://ryanrossi.com/pubs/KDD18-graph-attention-model.pdf)
+
