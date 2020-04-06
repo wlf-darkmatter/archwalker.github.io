@@ -5,11 +5,9 @@ titles:
   zh      : &ZH       关于
 key: page-about
 ---
-# Zhou Qin
-
 ## Bio
 
-I am Joe,  an algorithm engineer interested in graph neural networks, distributed systems, and functional programming. I graduated from Cornell university as a M.Eng in compute science student at May. 2018, and then joined Alibaba Group, working with commodity risk management team. Before that, I acheieved my B.Eng degree (also major in computer science) in Sourth China University of Technology. Cheek my [Resume](https://github.com/archwalker/archwalker.github.io/blob/master/_posts/Curriculum_Vitae.pdf) for details.
+I am Zhou Qin,  an algorithm engineer interested in graph neural networks, distributed systems, and functional programming. I graduated from Cornell university as a M.Eng in compute science student at May. 2018, and then joined Alibaba Group, working with commodity risk management team. Before that, I acheieved my B.Eng degree (also major in computer science) in Sourth China University of Technology. Cheek my [Resume](https://github.com/archwalker/archwalker.github.io/blob/master/_posts/Curriculum_Vitae.pdf) for details.
 
 Personally, I'd like to do some in-deepth research beneath a machine learning model (i.e. seeking for mathematical explainations). I am now mainly focusing on applying graph neural networks into our commodity risk management bussiness scenario. 
 
@@ -17,7 +15,7 @@ Personally, I'd like to do some in-deepth research beneath a machine learning mo
 
 ## Publications
 
-Li Ao\*, __Zhou Qin\*__, Runshi Liu, Yiqun Yang, and Dong Li. [**Spam Review Detection with Graph Convolutional Networks**](https://arxiv.org/abs/1908.10679) [ICML 2019, **Best Paper Award**, \*Equal Contribution]
+Li Ao\*, __Zhou Qin\*__, Runshi Liu, Yiqun Yang, and Dong Li. [**Spam Review Detection with Graph Convolutional Networks**](https://arxiv.org/abs/1908.10679) [CIKM 2019, **Best Paper Award**, \*Equal Contribution]
 
 ## About this blog
 
