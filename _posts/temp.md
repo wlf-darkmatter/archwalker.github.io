@@ -42,7 +42,7 @@ g = dgl.contrib.graph_store.create_graph_from_store("reddit", store_type="shared
 $$
 z_{v}^{(l+1)}=\sum_{u \in \mathcal{N}^{(l)}(v)} \tilde{A}_{u v} h_{u}^{(l)} \qquad h_{v}^{(l+1)}=\sigma\left(z_{v}^{(l+1)} W^{(l)}\right)
 $$
-[方差控制采样法](https://arxiv.org/abs/1710.10568)用如下的方法近似了$z_v^{(l+1)}$：
+[control-variate sampling](https://arxiv.org/abs/1710.10568)用如下的方法近似了$z_v^{(l+1)}$：
 $$
 \begin{aligned} \hat{z}_{v}^{(l+1)}=& \frac{|\mathcal{N}(v)|}{\left|\hat{\mathcal{N}}^{(l)}(v)\right|} \sum_{u \in \hat{\mathcal{N}}^{(l)}(v)} \tilde{A}_{u v}\left(\hat{h}_{u}^{(l)}-\overline{h}_{u}^{(l)}\right)+\sum_{u \in \mathcal{N}(v)} \tilde{A}_{u \nu} \overline{h}_{u}^{(l)} \\ & \hat{h}_{v}^{(l+1)}=\sigma\left(\hat{z}_{v}^{(l+1)} W^{(l)}\right) \end{aligned}
 $$
@@ -56,7 +56,99 @@ g.update_all(fn.copy_src(src='features', out='m'),
              lambda node : {'preprocess': node.data['preprocess'] * node.data['norm']})
 ```
 
+初看这段代码和矩阵计算没有任何关系啊，其实这段代码要从语义上理解，在语义上$\tilde{A}X$表示邻接矩阵和特征矩阵的乘法，即对于每个节点的特征跟新为邻居特征的和。那么再看上面这段代码就容易了，`copy_src`将节点特征取出来，并发送出去, `sum`接受到来自邻居的特征并求和，求和结果再发给节点，最后节点自身进行一下renormalize。
+
+`update_all`在graph store中是分布式进行的，每个trainer都会分派到一部分节点进行更新。
+
+节点和边的数据现在全部存储在graph store中因此访问他们不再像以前那样用 `g.ndata/g.edata`那样简单，因为这两个方法会读取整个节点和边的数据，而这些数据在graph store中并不存在(他们是分开存储的)，因此用户只能通过`g.nodes[node_ids].data[embed_name]`来访问特定节点的Embedding数据。(注意：这种读数据的方式是通用的，并不是graph store特有的，`g.ndata`即是`g.nodes[:].data`的缩写)。
+
+为了高效地初始化节点和边tensor，DGL提供了`init_ndata`和`init_edata`这两种方法。这两种方法都会讲初始化的命令发送到graph store server上，由server来代理初始化工作，下面展示了一个例子：
+
+```python
+for i in range(n_layers):
+    g.init_ndata('h_{}'.format(i), (features.shape[0], args.n_hidden), 'float32')
+    g.init_ndata('agg_h_{}'.format(i), (features.shape[0], args.n_hidden), 'float32')
+```
+
+其中`h_i`存储`i`层节点Embedding，`agg_h_i`存储`i`节点邻居Embedding的聚集后的结果。
+
+初始化节点数据之后，我们可以通过control-variate sampling的方法来训练GCN)：
+
+```python
+for nf in NeighborSampler(g, batch_size, num_neighbors,
+                          neighbor_type='in', num_hops=L-1,
+                          seed_nodes=labeled_nodes):
+    for i in range(nf.num_blocks):
+        # aggregate history on the original graph
+        g.pull(nf.layer_parent_nid(i+1),
+               fn.copy_src(src='h_{}'.format(i), out='m'),
+               lambda node: {'agg_h_{}'.format(i): node.data['m'].mean(axis=1)})
+    # We need to copy data in the NodeFlow to the right context.
+    nf.copy_from_parent(ctx=right_context)
+    nf.apply_layer(0, lambda node : {'h' : layer(node.data['preprocess'])})
+    h = nf.layers[0].data['h']
+
+    for i in range(nf.num_blocks):
+        prev_h = nf.layers[i].data['h_{}'.format(i)]
+        # compute delta_h, the difference of the current activation and the history
+        nf.layers[i].data['delta_h'] = h - prev_h
+        # refresh the old history
+        nf.layers[i].data['h_{}'.format(i)] = h.detach()
+        # aggregate the delta_h
+        nf.block_compute(i,
+                         fn.copy_src(src='delta_h', out='m'),
+                         lambda node: {'delta_h': node.data['m'].mean(axis=1)})
+        delta_h = nf.layers[i + 1].data['delta_h']
+        agg_h = nf.layers[i + 1].data['agg_h_{}'.format(i)]
+        # control variate estimator
+        nf.layers[i + 1].data['h'] = delta_h + agg_h
+        nf.apply_layer(i + 1, lambda node : {'h' : layer(node.data['h'])})
+        h = nf.layers[i + 1].data['h']
+    # update history
+    nf.copy_to_parent()
+```
+
+
+
 
 
 ### Distributed Sampler
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 

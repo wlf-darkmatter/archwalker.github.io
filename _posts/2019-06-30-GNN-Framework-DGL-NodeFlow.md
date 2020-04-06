@@ -128,7 +128,7 @@ for epoch in range(num_epochs):
             break
 ```
 
-上面的代码中，model由`GCNsampling`定义，虽然它的名字里有sampling，但这只是一个标准的GCN模型，其中没有任何和采样相关的内容，和采样相关代码的定义在`dgl.contrib.sampling.Neighborsampler`中，使用图结构`g`初始化这个类，并且定义采样的邻居个数`num_neighbors`，它返回的`nf`即是`NodeFlow`实例，采样后的子图。
+上面的代码中，model由`GCNsampling`定义，虽然它的名字里有sampling，但这只是一个标准的GCN模型，其中没有任何和采样相关的内容，和采样相关代码的定义在`dgl.contrib.sampling.Neighborsampler`中，使用图结构`g`初始化这个类，并且定义采样的邻居个数`num_neighbors`，它返回的`nf`即是`NodeFlow`实例，采样后的子图。因为`nf`只会返回子图的拓扑结构，不会附带节点Embedding，所以需要调用`copy_from_parent()`方法来获取Embedding，`layer_parent_nid`返回该nodeflow中每一层的节点id，根据上面的图示，当前batch内的节点(称为种子节点)位于最高层，所以`layer_parent_nid(-1)`返回当前batch内的节点id。剩下的步骤就是一个标准的模型训练代码，包括前向传播，计算loss，反向传播在此不再赘述。
 
 
 

@@ -36,3 +36,8 @@ date: 2019-06-02 12:00:00 +08:00
 - [WL algorithm](https://archwalker.github.io/blog/2019/06/22/GNN-Theory-WL.html)
 - [GNN power](https://archwalker.github.io/blog/2019/06/22/GNN-Theory-Power.html)
 
+2019-06-30："框架模块"
+
+- [DGL sampler](https://archwalker.github.io/blog/2019/06/30/GNN-Framework-DGL-NodeFlow.html)
+
+  
