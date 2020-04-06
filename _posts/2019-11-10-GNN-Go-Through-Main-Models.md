@@ -32,7 +32,7 @@ $$
 h_i^{(l+1)} = \sigma(b^{(l)} + \sum_{j\in\mathcal{N}(i)}\frac{1}{c_{ij}}h_j^{(l)}W^{(l)})
 $$
 
-其中 $$\mathcal{N}(i)$$ 表示节点$i$的邻居节点，$c_{ij}=\sqrt{\vert\mathcal{N}(i)\vert}\sqrt{\vert\mathcal{N}(j)\vert}$ 是正则化项，这个公式的思想很简单，节点$i$更新后的Embedding为邻居节点Embedding的加权表示。在论文的实现中，$W^{(l)}$ 以*Glorot uniform initialization* 的方式初始化，$b^{(l)}$被初始化为0。
+  其中 $$\mathcal{N}(i)$$ 表示节点$i$的邻居节点，$c_{ij}=\sqrt{\vert\mathcal{N}(i)\vert}\sqrt{\vert\mathcal{N}(j)\vert}$ 是正则化项，这个公式的思想很简单，节点$i$更新后的Embedding为邻居节点Embedding的加权表示。在论文的实现中，$W^{(l)}$ 以*Glorot uniform initialization* 的方式初始化，$b^{(l)}$被初始化为0。
 
 ### RelGraphConv
 
@@ -58,7 +58,7 @@ $$
 \mathbf{D}^{-1/2}\mathbf{X} \mathbf{\Theta}_{k}
 $$
 
-与上面的记号稍有不同，这个公式用的是矩阵的更新形式，其中$\mathbf{D}_{ii}=\sum_{j=0}A_{ij}$表示节点$i$的度。
+与上面的记号稍有不同，这个公式用的是矩阵的更新形式，其中$$\mathbf{D}_{ii}=\sum_{j=0}A_{ij}$$表示节点$i$的度。
 
 ### GATConv
 
@@ -288,8 +288,8 @@ $$
 来自论文 [Gated Graph Sequence Neural Networks](https://arxiv.org/abs/1511.05493.pdf) 对图中所有节点进行pooling，主要用来做对整个图的分类等任务：
 
 $$
-r^{(i)} = \sum_{k=1}^{N_i}\mathrm{softmax}\left(f_{gate}
-\left(x^{(i)}_k\right)\right) f_{feat}\left(x^{(i)}_k\right)
+  r^{(i)} = \sum_{k=1}^{N_i}\mathrm{softmax}\left(f_{gate}
+  \left(x^{(i)}_k\right)\right) f_{feat}\left(x^{(i)}_k\right)
 $$
 
 其中$r^{(i)}$ 被称作“读出器”，是对于整个图的Embedding描述。

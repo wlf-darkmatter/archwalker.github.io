@@ -5,20 +5,21 @@ titles:
   zh      : &ZH       关于
 key: page-about
 ---
-**自我介绍**
+# Zhou Qin
 
-你好，我是金良，一名算法工程师，我对图神经网络算法，分布式系统和函数式编程很感兴趣。
-你可以通过 csarchwalker `<AT>` gmail `<DOT>` com 联系我
+## Bio
 
-Hey, I am archwalker,  an algorithm engineer interested in graph neural networks, distributed systems, and functional programming.
-Personally, I'd like to do some in-deepth research beneath a machine learning model (i.e. seeking for mathematical explainations). 
-Get in touch with me through csarchwalker `<AT>` gmail `<DOT>` com
+I am Joe,  an algorithm engineer interested in graph neural networks, distributed systems, and functional programming. I graduated from Cornell university as a M.Eng in compute science student at May. 2018, and then joined Alibaba Group, working with commodity risk management team. Before that, I acheieved my B.Eng degree (also major in computer science) in Sourth China University of Technology. Cheek my [Resume](https://github.com/archwalker/archwalker.github.io/blob/master/_posts/Curriculum_Vitae.pdf) for details.
 
+Personally, I'd like to do some in-deepth research beneath a machine learning model (i.e. seeking for mathematical explainations). I am now mainly focusing on applying graph neural networks into our commodity risk management bussiness scenario. 
 
+ Free to contact me through csarchwalker `<AT>` gmail `<DOT>` com.
 
-**合作者**
+## Publications
 
-图神经网络系列是由我和莲说共同合作撰写的，莲说是一名硕士研究生，主要研究方向为图神经网络和自然语言处理，非常感谢他在图神经网络系列文章中的合作！他的邮箱是 yangkm601 `<AT>` gmail `<DOT>` com 
+Li Ao\*, __Zhou Qin\*__, Runshi Liu, Yiqun Yang, and Dong Li. [**Spam Review Detection with Graph Convolutional Networks**](https://arxiv.org/abs/1908.10679) [ICML 2019, **Best Paper Award**, \*Equal Contribution]
+
+## About this blog
 
 Graph Neural Networks series is a collaboration work bettween me and Lianshuo, he is a master student mainly interested in graph neural networks and neural language processing. Thanks for his dedication in this work!
 
