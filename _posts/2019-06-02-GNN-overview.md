@@ -11,7 +11,7 @@ date: 2019-06-02 12:00:00 +08:00
 
 图神经网络是表征学习中兴起的一个新方向，本博客将以论文带读的方式讨论图神经网络的最新进展。下图展示了目前的规划：
 
-![Screen Shot 2019-06-20 at 8.13.05 PM](http://ww1.sinaimg.cn/large/006tNc79ly1g47vul0a5lj31j20oin3c.jpg)
+![Screen Shot 2019-06-24 at 9.13.07 PM](http://ww4.sinaimg.cn/large/006tNc79ly1g4ck12nmw2j31f00u07by.jpg)
 
 这篇博文会记录进度，预计每一周或两周完成一个模块，规划也会随时更新。
 
@@ -30,3 +30,9 @@ date: 2019-06-02 12:00:00 +08:00
 2019-06-19: 有同学反馈对图的基本概念不是很了解，于是加上了一个基本介绍
 
 - [GNN Basics](https://archwalker.github.io/blog/2019/05/31/GNN-basics.html)
+
+2019-06-24：完成"表达能力模块"
+
+- [WL algorithm](https://archwalker.github.io/blog/2019/06/22/GNN-Theory-WL.html)
+- [GNN power](https://archwalker.github.io/blog/2019/06/22/GNN-Theory-Power.html)
+
