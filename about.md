@@ -1,6 +1,6 @@
 ---
 layout: article
-titles:
+titles: About
   en      : &EN       About
   zh      : &ZH       关于
 key: page-about
