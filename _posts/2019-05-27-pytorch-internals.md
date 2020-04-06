@@ -330,9 +330,9 @@ PyTorch 中的许多kernel仍然由古老的TH类型的代码实现(顺便说一
 
 总之这份教程带你快速扫过PyTorch内部机制！许多东西没有被讨论到，但是希望以上的描述和解释能够帮助你对代码的大体结构有个初步的了解。
 
-看完这份教程后你需要去哪里获得更详细的资源？你能够做哪种类型的贡献？一个比较好的起点是我们的问题追踪其(issue tracker)。在今年早期，我们开始标注问题，一个问题被标注意味着至少有一个PyTorch开发者注意到了这个问题并且做了初始的任务评估。通过这些标注你能够知道那些问题我们认为是[high priority](https://github.com/pytorch/pytorch/issues?q=is%3Aopen+is%3Aissue+label%3A"high+priority"+label%3Atriaged)的，或者你可以查询属于特定模块的问题，例如 [autograd](https://github.com/pytorch/pytorch/issues?q=is%3Aopen+is%3Aissue+label%3Atriaged+label%3A%22module%3A+autograd%22) ，或者你可以查询一些我们认为是[小问题](https://github.com/pytorch/pytorch/issues?q=is%3Aopen+is%3Aissue+label%3Atriaged+label%3Asmall)(警告：我们有时也会判断失误)
+看完这份教程后你需要去哪里获得更详细的资源？你能够做哪种类型的贡献？一个比较好的起点是我们的问题追踪器(issue tracker)。在今年早些时候，我们开始对问题进行标注，一个标注过的问题意味着至少有一个PyTorch开发者注意到了它并且做了初始的任务评估。通过这些标注你能够知道我们认为哪些问题是[high priority](https://github.com/pytorch/pytorch/issues?q=is%3Aopen+is%3Aissue+label%3A"high+priority"+label%3Atriaged)的，或者你可以查询属于特定模块的问题，例如 [autograd](https://github.com/pytorch/pytorch/issues?q=is%3Aopen+is%3Aissue+label%3Atriaged+label%3A%22module%3A+autograd%22) ，或者你可以查询一些我们认为不是那么重要的[小问题](https://github.com/pytorch/pytorch/issues?q=is%3Aopen+is%3Aissue+label%3Atriaged+label%3Asmall)(警告：我们有时也会判断失误)
 
-即使你不想立刻开始编程，也有很多有意义的工作比如改善文档(我喜欢合并文档的pull请求，它们实在是太好了)，帮助我们复现其他用户报告的bug，帮助我们讨论问题追踪中的RFCs(request for comment，请求注释)。没有开源贡献者就没有PyTorch的今天，希望你们能加入我们！
+即使你不想立刻开始编程，也有很多有意义的工作比如改善文档(我喜欢合并文档的pull请求，它们实在是太好了)，帮助我们复现其他用户报告的bug，帮助我们讨论问题追踪中的RFCs(request for comment，请求给出详细注释)。没有开源贡献者就没有PyTorch的今天，希望你们能加入我们！
 
 
 
