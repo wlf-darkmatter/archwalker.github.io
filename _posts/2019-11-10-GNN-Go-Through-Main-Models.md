@@ -47,7 +47,7 @@ $$
 
 式中 $$\mathcal{N}^r(i)$$ 表示在边类型为$r$时节点$i$的邻居节点，$c_{i,r}=\vert\mathcal{N}^r(i)\vert$是正则化项，$$ W_r^{(l)} = \sum_{b=1}^B a_{rb}^{(l)}V_b^{(l)}$$ 是对$W_r$的基向量分解，这样分解的原因是如果有太多种的边类型的时候，通过分解，只需要学习基向量$V_b^{(l)}$，减少欠拟合的风险。
 
-## TAGConv
+### TAGConv
 
 来自论文[Topology Adaptive Graph Convolutional Networks](https://arxiv.org/pdf/1710.10370.pdf) 一作是来自CMU的Jian Du(杜建)，他当时在CMU做postdoc。
 
