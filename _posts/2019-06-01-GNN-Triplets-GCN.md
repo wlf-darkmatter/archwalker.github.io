@@ -25,9 +25,9 @@ $$
 \mathcal{L}_{\mathrm{reg}}=\sum_{i, j} A_{i j}\left\|f\left(X_{i}\right)-f\left(X_{j}\right)\right\|^{2}=f(X)^{\top} \Delta f(X) \tag{2}
 $$
 
-其中， $$\mathcal{L}_{0}$$ 表示图中带标签节点的监督损失，$$\mathcal{L}_{reg}$$ 代表图结构信息引入的损失， $f(\cdot)$ 类似神经网络的可微分函数， $\lambda$ 为权重系数，$X$为节点特征向量$X_i$的矩阵，$\Delta=D-A$表示无向图$\mathcal{G}=(\mathcal{V}, \mathcal{E})$的未正则化图拉普拉斯算子。$\mathcal{G}=(\mathcal{V}, \mathcal{E})$ 中，节点$v_{i} \in \mathcal{V}$共$N$个，边$\left(v_{i}, v_{j}\right) \in \mathcal{E}$， 邻接矩阵$A \in \mathbb{R}^{N \times N}$（可以而二值的(bianry)，也可以是加权的(weighted)），度矩阵$D_{i i}=\sum_{j} A_{i j}$。
+其中， $$\mathcal{L}_{0}$$ 表示图中带标签节点的监督损失，$$\mathcal{L}_{reg}$$ 代表图结构信息引入的损失， $f(\cdot)$ 类似神经网络的可微分函数， $\lambda$ 为权重系数，$X$为节点特征向量$X_i$的矩阵，$\Delta=D-A$表示无向图$\mathcal{G}=(\mathcal{V}, \mathcal{E})$的未正则化图拉普拉斯算子。$\mathcal{G}=(\mathcal{V}, \mathcal{E})$ 中，节点$v_{i} \in \mathcal{V}$共$N$个，边$\left(v_{i}, v_{j}\right) \in \mathcal{E}$， 邻接矩阵$A \in \mathbb{R}^{N \times N}$（可以是二值的(bianry)，也可以是加权的(weighted)），度矩阵$D_{i i}=\sum_{j} A_{i j}$。
 
-这样的学习策略基于于图中的相邻节点标签可能相同的假设。然而，这个假设可能会限制模型的能力，因为图的边不一定代表所连接节点相似。
+这样的学习策略基于图中的相邻节点标签可能相同的假设。然而，这个假设可能会限制模型的能力，因为图的边不一定代表所连接节点相似。
 
 因此，在这个工作中，作者不再显示的定义图结构信息的损失函数 $$\mathcal{L}_{reg}$$ , 而是使用神经网络模型$f(X, A)$直接对图结构进行编码，训练所有带标签的结点$$\mathcal{L}_{0}$$，来避免损失函数中的正则化项$$\mathcal{L}_{reg}$$。
 
@@ -53,7 +53,10 @@ $$
 ### 谱图卷积(Spectral Graph Convolutions)
 谱图卷积是这样定义的：信号$x\in\mathbb{R}^N$(对每个节点来说是一个标量)乘以傅里叶域的滤波器$g_\theta=\text{diag}(\theta), \theta\in\mathbb{R}^N$,即：
 
-$$g_{\theta} \star x=U g_{\theta} U^{\top} x$$
+$$
+g_{\theta} \star x=U g_{\theta} U^{\top} x
+$$
+
 归一化的图拉普拉斯(normalized graph Laplacian)表示为 $L=I_{N}-D^{-\frac{1}{2}} A D^{-\frac{1}{2}}=U \Lambda U^{\top}$。$U$是$L$的特征向量矩阵，而$\Lambda$是对应的特征值矩阵(特征值在对角线上)，$U^\top x$是$x$在图上的傅里叶变换。我们能将$g_\theta$理解为$L$特征值的一个函数，即$g_\theta(\Lambda)$。上面的等式算起来非常耗时，因为特征向量矩阵的乘法是$\mathcal{O}(N^2)$阶的。再者，$L$的特征分解在大图上也很低效。为了克服这样的问题 [Hammond et al. (2011)](https://hal.inria.fr/inria-00541855/document)指出$g_{\theta}(\Lambda)$能够被切比雪夫多项式(Chebyshev polynomials) $T_k(x)$所近似，$K$阶多项式就能达到很好的近似效果：
 
 $$
@@ -92,10 +95,16 @@ $$
 我们把上述定义进一步泛化：输入信号$X\in \mathbb{R}^{N\times C}$, 每个输入信号有$C$个通道(channels, 即每个图节点有$C$维特征)，卷积包含$F$个滤波器(filters)或特征映射(feature maps), 如下：
 
 $$
-Z=\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} X \Theta
+Z=\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} X W
 $$
 
-其中$$\Theta\in \mathbb{R}^{C\times F}$$ 是filters的参数矩阵, $Z\in \mathbb{R}^{N\times F}$ 是卷积之后的信号矩阵。这样的转化操作的时间复杂度为$$\mathcal{O}(\vert\mathcal{E}\vert FC)$$, 因为$$\tilde{A}X$$能够被高效的以稀疏矩阵和稠密矩阵相乘的形式实现。
+其中$$W\in \mathbb{R}^{C\times F}$$ 是filters的参数矩阵, $Z\in \mathbb{R}^{N\times F}$ 是卷积之后的信号矩阵。这样的转化操作的时间复杂度为$$\mathcal{O}(\vert\mathcal{E}\vert FC)$$, 因为$$\tilde{A}X$$能够被高效的以稀疏矩阵和稠密矩阵相乘的形式实现。
+
+$X$是输入向量，神经网络通常有多层，我们习惯于把$X$变换后的向量记做$H$，表示节点在隐藏层的embedding, $W$表示神经网络的权重，输出$Z$会变成下一层的输入，因此在多层的图神经网络中，更新公式为
+$$
+H^{(l+1)}=\sigma\left(\tilde{D}^{-\frac{1}{2}}\tilde{A} \tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}\right)
+$$
+
 
 
 ## 半监督学习节点分类
@@ -127,7 +136,7 @@ $$
 
 
 ## 后话
-实现时，由于GCN需要输入整个邻接矩阵$A$和特征矩阵$X$, 因此它是非常耗内存的，论文中作者做了优化，他们将$A$作为稀疏矩阵输入，然后通过实现系数矩阵和稠密矩阵相乘的GPU算子来加速计算，然而，即使这样，整个矩阵仍然存在这要被塞进内存和显存中的问题，当图规模变大的时候，这种方法是不可取的，在下一篇GraphSAGE的博文中，我们将会介绍如何巧妙的克服这样的问题。
+实现时，由于GCN需要输入整个邻接矩阵$A$和特征矩阵$X$, 因此它是非常耗内存的，论文中作者做了优化，他们将$A$作为稀疏矩阵输入，然后通过实现稀疏矩阵和稠密矩阵相乘的GPU算子来加速计算，然而，即使这样，整个矩阵仍然存在这要被塞进内存和显存中的问题，当图规模变大的时候，这种方法是不可取的，在下一篇GraphSAGE的博文中，我们将会介绍如何巧妙的克服这样的问题。
 
 ## Reference
 [Semi-Supervised Classification with Graph Convolutional Networks](http://arxiv.org/abs/1609.02907)

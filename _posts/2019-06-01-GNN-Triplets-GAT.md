@@ -42,7 +42,7 @@ $$
 
 其中，$\mathbf{a}$ 表示一个可训练的参数向量, 用来学习节点和邻居之间的相对重要性，$\mathbf{W}$ 也是一个可训练的参数矩阵，用来对输入特征做线性变换，$\vert\vert$表示向量拼接(concate)。
 
-![](https://i.imgur.com/auzvuiy.png)
+![](http://ww1.sinaimg.cn/large/006tNc79ly1g3odbgkqd1j30bq06bjrs.jpg)
 
 
 > 如上图，对于一个目标对象$v_0$，$a_{0,i}$ 表示它和邻居$v_i$的相对重要性权重。$a_{0, i}$可以根据 $v_0$ 和 $v_i$ 的 embedding $x_0$ 和 $x_i$ 计算，比如图中$\alpha_{0, 4}$ 是由 $x_0, x_4, \mathbf{W}, \mathbf{a}$ 共同计算得到的。
@@ -66,10 +66,10 @@ $$
 
 GAM方法在输入图进行一系列的随机游走，并且通过RNN对已访问节点进行编码，构建子图embedding。时间$t$的RNN隐藏状态 $$\mathbf{h}_{t} \in \mathbb{R}^{h}$$ 编码了随机游走中 $1, \cdots, t$ 步访问到的节点。然后，注意力机制被定义为函数 $f^{\prime} : \mathbb{R}^{h} \rightarrow \mathbb{R}^{k}$，用于将输入的隐向量$$f'\left(\mathbf{h}_{t}\right)=\mathbf{r}_{t+1}$$映射到一个$k$维向量中，可以通过比较这$k$维向量每一维的数值确定下一步需要优先游走到哪种类型的节点(假设一共有$k$种节点类型)。下图做了形象的阐述：
 
-![](https://i.imgur.com/IHYxrHG.png)
+![](http://ww1.sinaimg.cn/large/006tNc79ly1g3odbha88dj309906j0t2.jpg)
 
 
-> 如上图，$h_3$聚合了长度$L=3$的随机游走得到的信息$\left(x_{1}, x_2, x_{3}\right)$，我们将该信息输入到排序函数中，以确定各个邻接节点的重要性并用于影响下一步游走。
+> 如上图，$h_3$聚合了长度$L=3$的随机游走得到的信息$\left(x_{1}, x_2, x_{3}\right)$，我们将该信息输入到排序函数中，以确定各个邻居节点的重要性并用于影响下一步游走。
 >
 
 ## 后话
