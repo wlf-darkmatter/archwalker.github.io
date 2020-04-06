@@ -52,7 +52,7 @@ $$
 
 通过这种方式，在每个batch的训练中，我们实际上将原图a)转化成了一个子图b)，因此当原图很大无法塞进内存的时候，我们可以通过调小batch_size解决这样的问题。
 
-根据逐层跟新公式可知，每一个block之间的计算是完全独立的，因此`NodeFlow`提供了函数`block_compute`以提供底层embedding向高层的传递和计算工作。
+根据逐层更新公式可知，每一个block之间的计算是完全独立的，因此`NodeFlow`提供了函数`block_compute`以提供底层embedding向高层的传递和计算工作。
 
 ![image0](http://ww4.sinaimg.cn/large/006tNc79ly1g4j3uufw20j30lf05s0tx.jpg)
 
@@ -130,7 +130,60 @@ for epoch in range(num_epochs):
 
 上面的代码中，model由`GCNsampling`定义，虽然它的名字里有sampling，但这只是一个标准的GCN模型，其中没有任何和采样相关的内容，和采样相关代码的定义在`dgl.contrib.sampling.Neighborsampler`中，使用图结构`g`初始化这个类，并且定义采样的邻居个数`num_neighbors`，它返回的`nf`即是`NodeFlow`实例，采样后的子图。因为`nf`只会返回子图的拓扑结构，不会附带节点Embedding，所以需要调用`copy_from_parent()`方法来获取Embedding，`layer_parent_nid`返回该nodeflow中每一层的节点id，根据上面的图示，当前batch内的节点(称为种子节点)位于最高层，所以`layer_parent_nid(-1)`返回当前batch内的节点id。剩下的步骤就是一个标准的模型训练代码，包括前向传播，计算loss，反向传播在此不再赘述。
 
+### Control Variate
 
+通过采样而估计的$\hat{Z}^{(\cdot)}$是无偏的，但是方差会较大，因此需要采大量的邻居样本来减少方差，因此在GraphSAGE的原论文中，作者设定了$D^{(0)}=25$，$D^{(1)}=10$。control variate是用于Monte Carlo方法中的一种标准的减少方差的的技术，通过使用它，每一个hop采样两个邻居看起来就足够了。
+
+Control variate方法是这样工作的：给定随机变量$X$，我们想要估计它的期望$\mathbb{E}[X] = \theta$，为此我们寻找另一个随机变量$Y$，$Y$和$X$强相关并且$Y$的期望$\mathbb{E}[Y]$能够被轻松地计算得到。通过$Y$估计$X$期望的近似值$\tilde{X}$ 可以表示为：
+$$
+\tilde{X}=X-Y+\mathbb{E}[Y]\\
+\mathbb{V} \mathbb{A} \mathbb{R}[\tilde{X}]=\mathbb{VAR}[X]+\mathbb{VAR}[Y]-2 \cdot \mathbb{COV}[X, Y]\\
+$$
+[Chen et al.](https://arxiv.org/abs/1710.10568) 提出了一种基于control variate的方法用于GCN的训练过程，假设在每一个hop中我们只采样非常少的邻居，那么未采到的邻居节点Embedding $\bar{H}^{(l)}$的数量较多，可以用来很好地故居邻居样本总体均值。更改后的评估器$\hat{Z}_v^{(l+1)}$表示为：
+$$
+\begin{align}
+\hat{z}_{v}^{(l+1)}&=\frac{|\mathcal{N}(v)|}{\left|\hat{\mathcal{N}}^{(l)}(v)\right|} \sum_{u \in \hat{\mathcal{N}}^{(l)}(v)} \tilde{A}_{u v}\left(\hat{h}_{u}^{(l)}-\overline{h}_{u}^{(l)}\right)+\sum_{u \in \mathcal{N}(v)} \tilde{A}_{u \nu} \overline{h}_{u}^{(l)}\\
+\hat{h}_{v}^{(l+1)}&=\sigma\left(\hat{z}_{v}^{(l+1)} W^{(l)}\right)
+\end{align}
+$$
+那么上面的代码可以按照这种思路改写为：
+
+```python
+g.ndata['h_0'] = features
+for i in range(L):
+  g.ndata['h_{}'.format(i+1)] = mx.nd.zeros((features.shape[0], n_hidden))
+  # With control-variate sampling, we only need to sample 2 neighbors to train GCN.
+  for nf in dgl.contrib.sampling.NeighborSampler(g, batch_size, expand_factor=2,
+                                                 neighbor_type='in', num_hops=L,
+                                                 seed_nodes=train_nid):
+    for i in range(nf.num_blocks):
+      # aggregate history on the original graph
+      g.pull(nf.layer_parent_nid(i+1),
+             fn.copy_src(src='h_{}'.format(i), out='m'),
+             lambda node: {'agg_h_{}'.format(i): node.mailbox['m'].mean(axis=1)})
+      nf.copy_from_parent()
+      h = nf.layers[0].data['features']
+      for i in range(nf.num_blocks):
+        prev_h = nf.layers[i].data['h_{}'.format(i)]
+        # compute delta_h, the difference of the current activation and the history
+        nf.layers[i].data['delta_h'] = h - prev_h
+        # refresh the old history
+        nf.layers[i].data['h_{}'.format(i)] = h.detach()
+        # aggregate the delta_h
+        nf.block_compute(i,
+                         fn.copy_src(src='delta_h', out='m'),
+                         lambda node: {'delta_h': node.data['m'].mean(axis=1)})
+        delta_h = nf.layers[i + 1].data['delta_h']
+        agg_h = nf.layers[i + 1].data['agg_h_{}'.format(i)]
+        # control variate estimator
+        nf.layers[i + 1].data['h'] = delta_h + agg_h
+        nf.apply_layer(i + 1, lambda node : {'h' : layer(node.data['h'])})
+        h = nf.layers[i + 1].data['h']
+        # update history
+        nf.copy_to_parent()
+```
+
+上文代码中，`nf`是`NeighborSampler`返回的对象，在`nf`的对象的每一个`block`内，首先调用`pull`函数
 
 ## 后话
 
