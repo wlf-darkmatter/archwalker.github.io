@@ -49,7 +49,7 @@ author:
   zhihu     : # "user_name" the last part of your profile url, e.g. https://www.zhihu.com/people/user_name
   douban    : # "user_name" the last part of your profile url, e.g. https://www.douban.com/people/user_name
   linkedin  : # "user_name" the last part of your profile url, e.g. https://www.linkedin.com/in/user_name
-  github    : https://github.com/archwalker # "user_name" the last part of your profile url, e.g. https://github.com/user_name
+  github    : archwalker # "user_name" the last part of your profile url, e.g. https://github.com/user_name
   npm       : # "user_name" the last part of your profile url, e.g. https://www.npmjs.com/~user_name
 
 
@@ -127,7 +127,7 @@ comments:
   ## Gitalk
   # please refer to https://github.com/gitalk/gitalk for more info.
   gitalk:
-    clientID    : 5290caabe3bcb3a8a3c3 # GitHub Application Client ID
+    clientID    : 87889c1fd8d397356e8a # GitHub Application Client ID
     clientSecret: dda4a3a145869267655c919df16a6101f4bf0a52 # GitHub Application Client Secret
     repository  : archwalker.github.io # GitHub repo
     owner       : archwalker # GitHub repo owner
