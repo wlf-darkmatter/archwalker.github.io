@@ -86,4 +86,4 @@ $$
 
 [SEMI-SUPERVISED CLASSIFICATION WITH GRAPH CONVOLUTIONAL NETWORKS](http://arxiv.org/abs/1609.02907)
 
-[《Graph learning》| 图传播算法（下）](https://mp.weixin.qq.com/s?__biz=MzI2MDE5MTQxNg==&mid=2649687879&idx=1&sn=5b622fae52428b65c45e2d8433222723)
+[《Graph learning》 图传播算法（下）](https://mp.weixin.qq.com/s?__biz=MzI2MDE5MTQxNg==&mid=2649687879&idx=1&sn=5b622fae52428b65c45e2d8433222723)
