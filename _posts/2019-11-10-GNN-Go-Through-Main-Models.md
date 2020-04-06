@@ -1,6 +1,6 @@
 ---
 layout: article
-title: GNN 教程(特别篇)：GNN的一些代表模型
+title: GNN 教程(特别篇)：一文遍览GNN的代表模型
 key: GNN_tutorial_go_through_main_models
 tags: GNN
 category: blog
@@ -14,9 +14,9 @@ date: 2019-11-10 12:00:00 +08:00
 
 GNN的各种模型在近两年来非常火热，在各个会议、期刊上新的模型层出不穷，他们有的做了理论创新，有的对前人的工作提出了改进，在这篇博文中，我想要带大家回顾GNN在近两年来的一些模型的异同，着重体现在他们的数学表达式上的差异。
 
-这篇博文主要遵循 [DGL](https://docs.dgl.ai/api/python/nn.pytorch.html) 框架的梳理脉络，加上一些对公式以及背后思想的解释。这篇博文面向的读者是对图神经网络已经有了一定程度的了解的学者。
+这篇博文主要遵循 [DGL](https://docs.dgl.ai/api/python/nn.pytorch.html) 框架和[PyTorch geometric](https://pytorch-geometric.readthedocs.io/en/latest/modules/nn.html#module-torch_geometric.nn.conv.message_passing)的梳理脉络，加上一些对公式以及背后思想的解释。这篇博文面向的读者是对图神经网络已经有了一定程度的了解的学者。
 
-文章中整理的GNN模型只是目前提出各种创新的一小部分，欢迎大家补充其他的模型。才疏学浅，如有疏漏，欢迎大家指正，可以通过github pull request 的方式，也可以发邮件给我，谢谢！
+文章中整理的GNN模型只是目前提出各种创新的一小部分，欢迎大家补充其他的模型。才疏学浅，如有疏漏，欢迎大家指正，可以通过github pull request 的方式，也可以留言或者发邮件给我，谢谢！
 
 
 
@@ -73,21 +73,35 @@ $$
 其中 $\alpha_{i,j}$是邻居$j$对节点$i$的相对重要性权重，是通过下式学习得到的：
 
 $$
-\begin{align}\begin{aligned}\alpha_{ij}^{l} & = \mathrm{softmax_i} (e_{ij}^{l})\\e_{ij}^{l} & = \mathrm{LeakyReLU}\left(\vec{a}^T [W h_{i} \\vert W h_{j}]\right)\end{aligned}\end{align}
+\begin{align}\begin{aligned}\alpha_{ij}^{l} & = \mathrm{softmax_i} (e_{ij}^{l})\\e_{ij}^{l} & = \mathrm{LeakyReLU}\left(\vec{a}^T [W h_{i} \vert W h_{j}]\right)\end{aligned}\end{align}
 $$
 
 值得一提的是，同年的ICLR上，还有一篇关于Graph Attention的论文 [Attention-based Graph Neural Network for Semi-supervised Learning](https://arxiv.org/abs/1803.03735) 文章的主要思想是根据当前节点和邻居节点Embedding的cosine相似度作为Attention的加权因子，做了详细的实验和分析。
 
+### PointConv
+
+来自论文 [PointNet: Deep Learning on Point Sets for 3D Classification and Segmentation](https://arxiv.org/abs/1612.00593) 这是较早得将GNN应用在点云上的文章：
+
+$$
+\mathbf{x}^{\prime}_i = \gamma_{\mathbf{\Theta}} \left( \max_{j \in
+\mathcal{N}(i) \cup \{ i \}} h_{\mathbf{\Theta}} ( \mathbf{x}_j,
+\mathbf{p}_j - \mathbf{p}_i) \right),
+$$
+
+其中$$\gamma_{\mathbf{\Theta}}$$和$$h_{\mathbf{\Theta}}$$都表示多层感知机层，$$\mathbf{P} \in \mathbb{R}^{N \times D}$$ 表示每个点的坐标向量。
+
 ### EdgeConv
 
-来自论文 [Dynamic Graph CNN for Learning on Point Clouds (TOG 2019)](https://arxiv.org/pdf/1801.07829) 第一作者是MIT的博士Yue Wang, 这是一篇将图神经网络应用在点云上的文章，对于邻居节点Embedding的汇聚方法，他们是这么定义的：
+来自论文 [Dynamic Graph CNN for Learning on Point Clouds (TOG 2019)](https://arxiv.org/pdf/1801.07829) 第一作者是MIT的博士Yue Wang, 这是另一一篇将图神经网络应用在点云上的文章，对于邻居节点Embedding的汇聚方法，他们是这么定义的：
 
 $$
 x_i^{(l+1)} = \max_{j \in \mathcal{N}(i)} \mathrm{ReLU}(
 \Theta \cdot (x_j^{(l)} - x_i^{(l)}) + \Phi \cdot x_i^{(l)})
 $$
 
-这里使用两个节点Embedding的差在点云的数据上有其场景意义，因为在点云的数据集上，节点的Embedding取的是节点的坐标向量，所以两个节点Embedding的差表示的是两个坐标向量的差，即自当前节点$i$出发，到其邻居节点$j$的向量。
+这里使用两个节点Embedding的差在点云的数据上有其场景意义，因为在点云的数据集上，节点的Embedding一般取的是节点的坐标向量，所以两个节点Embedding的差表示的是两个坐标向量的差，即自当前节点$i$出发，到其邻居节点$j$的向量。
+
+
 
 ### SAGEConv
 
@@ -109,7 +123,7 @@ $$
 H^{l+1} = (\hat{D}^{-1/2} \hat{A} \hat{D}^{-1/2})^K H^{l} \Theta^{l}
 $$
 
-这里$H^{(l+1)}$可以直接作为节点Embedding的输出结果。个人认为在DGL的框架中，这样实现是不准确的，这样反而加大了计算量，没有达到论文中“简化”的目的。
+这里$H^{(l+1)}$可以直接作为节点Embedding的输出结果。个人认为使用$H^{(l+1)}$表达是不准确的，这样写好像在每一层都需要这个卷积操作，反而加大了计算量，没有达到论文中“简化”的目的。
 
 ### APPNPConv
 
@@ -139,7 +153,7 @@ $$
 来自论文 [Gated Graph Sequence Neural Networks](https://arxiv.org/pdf/1511.05493.pdf)，这篇论文是一篇早期的探索图神经网络中的长依赖的论文，一作是来自多伦多大学的Yujia Li，论文利用了时序建模中的GRU模块：
 
 $$
-\begin{align}\begin{aligned}h_{i}^{0} & = [ x_i \\vert \mathbf{0} ]\\a_{i}^{t} & = \sum_{j\in\mathcal{N}(i)} W_{e_{ij}} h_{j}^{t}\\h_{i}^{t+1} & = \mathrm{GRU}(a_{i}^{t}, h_{i}^{t})\end{aligned}\end{align}
+\begin{align}\begin{aligned}h_{i}^{0} & = [ x_i \vert \mathbf{0} ]\\a_{i}^{t} & = \sum_{j\in\mathcal{N}(i)} W_{e_{ij}} h_{j}^{t}\\h_{i}^{t+1} & = \mathrm{GRU}(a_{i}^{t}, h_{i}^{t})\end{aligned}\end{align}
 $$
 
 可以看到，和之前介绍的GNN模型不同，邻居节点汇聚后Embedding $a_i^t$不再直接加到自身Embedding上(GCN)，也不再直接concat到自身Embedding上(GraphSAGE)，而是采用GRU的方式汇聚，以保持对长依赖的建模。
@@ -183,7 +197,27 @@ $$
 
 其中边上的权重$e_{ij}$被显示的建模到模型中来，作为邻居加权求和的权重，这里免去了对邻居权重的学习，直接用边的权重表征邻居的相对重要性。
 
+### DNAConv
 
+来自论文 [Just Jump: Towards Dynamic Neighborhood Aggregation in Graph Neural Networks](https://arxiv.org/abs/1904.04849) ，也着重于邻居相对重要性，与Graph Attention Network不同，这篇论文的方法更加直接得将“QKV”式的attention引入到公式中：
+
+$$
+\mathbf{x}_v^{(t)} = h_{\mathbf{\Theta}}^{(t)} \left( \mathbf{x}_{v
+\leftarrow v}^{(t)}, \left\{ \mathbf{x}_{v \leftarrow w}^{(t)} : w \in
+\mathcal{N}(v) \right\} \right)
+$$
+
+其中邻居节点的Embedding由"QKV"式的attention计算：
+
+$$
+\mathbf{x}_{v \leftarrow w}^{(t)} = \textrm{Attention} \left(
+\mathbf{x}^{(t-1)}_v \, \mathbf{\Theta}_Q^{(t)}, [\mathbf{x}_w^{(1)},
+\ldots, \mathbf{x}_w^{(t-1)}] \, \mathbf{\Theta}_K^{(t)}, \,
+[\mathbf{x}_w^{(1)}, \ldots, \mathbf{x}_w^{(t-1)}] \,
+\mathbf{\Theta}_V^{(t)} \right)
+$$
+
+其中 $$\mathbf{\Theta}_Q^{(t)}, \mathbf{\Theta}_K^{(t)}, \mathbf{\Theta}_V^{(t)}$$ 分别代表query, key 和 value 的隐射矩阵。
 
 ## 池化层的设计
 
@@ -217,7 +251,37 @@ $$
 
 ### SortPooling
 
-来自论文 [An End-to-End Deep Learning Architecture for Graph Classification](https://www.cse.wustl.edu/~ychen/public/DGCNN.pdf) ，这个描述起来有点复杂，可以参考原论文
+来自论文 [An End-to-End Deep Learning Architecture for Graph Classification](https://www.cse.wustl.edu/~ychen/public/DGCNN.pdf) ，这篇文章的主要思路是通过 [WL算法](https://archwalker.github.io/blog/2019/06/22/GNN-Theory-WL.html) 可以对节点进行着色，而节点的颜色可以定义节点之间的次序，有了节点的次序，我们就可以通过1-D卷积的方法进行卷积运算。因为过程比较抽象，具体请参考原论文。
+
+### TopKPooling
+
+来自论文 [Graph U-Nets](https://arxiv.org/abs/1905.05178) ，论文的主要思路是将节点Embedding隐射到1维空间中选择其中top k个节点再进行图卷积的计算，以下是构造top k节点小图的选取过程：
+
+$$
+\begin{align}\begin{aligned}\mathbf{y} &= \frac{\mathbf{X}\mathbf{p}}{\| \mathbf{p} \|}\\\mathbf{i} &= \mathrm{top}_k(\mathbf{y})\\\mathbf{X}^{\prime} &= (\mathbf{X} \odot
+\mathrm{tanh}(\mathbf{y}))_{\mathbf{i}}\\\mathbf{A}^{\prime} &= \mathbf{A}_{\mathbf{i},\mathbf{i}}\end{aligned}\end{align}
+$$
+
+也可以设置一个阈值 $\tilde{\alpha}$：
+
+$$
+\begin{align}\begin{aligned}\mathbf{y} &= \mathrm{softmax}(\mathbf{X}\mathbf{p})\\\mathbf{i} &= \mathbf{y}_i > \tilde{\alpha}\\\mathbf{X}^{\prime} &= (\mathbf{X} \odot \mathbf{y})_{\mathbf{i}}\\\mathbf{A}^{\prime} &= \mathbf{A}_{\mathbf{i},\mathbf{i}},\end{aligned}\end{align}
+$$
+
+### SAGPooling
+
+来自论文 [Self-Attention Graph Pooling](https://arxiv.org/abs/1904.08082)，论文可以看做是TopKPooling的衍生工作，在TopKPooling中，节点的排序因子$y$按照线性映射的方式生成，而在这篇文章的工作中，作者是用GNN的方法来生成节点排序因子：
+
+$$
+\begin{align}\begin{aligned}\mathbf{y} &= \textrm{GNN}(\mathbf{X}, \mathbf{A})\\\mathbf{i} &= \mathrm{top}_k(\mathbf{y})\\\mathbf{X}^{\prime} &= (\mathbf{X} \odot
+\mathrm{tanh}(\mathbf{y}))_{\mathbf{i}}\\\mathbf{A}^{\prime} &= \mathbf{A}_{\mathbf{i},\mathbf{i}}\end{aligned}\end{align}
+$$
+
+对应的设置阈值$\tilde{\alpha}$的版本：
+
+$$
+\begin{align}\begin{aligned}\mathbf{y} &= \mathrm{softmax}(\textrm{GNN}(\mathbf{X},\mathbf{A}))\\\mathbf{i} &= \mathbf{y}_i > \tilde{\alpha}\\\mathbf{X}^{\prime} &= (\mathbf{X} \odot \mathbf{y})_{\mathbf{i}}\\\mathbf{A}^{\prime} &= \mathbf{A}_{\mathbf{i},\mathbf{i}},\end{aligned}\end{align}
+$$
 
 ### GlobalAttentionPooling
 
@@ -227,11 +291,12 @@ $$
 r^{(i)} = \sum_{k=1}^{N_i}\mathrm{softmax}\left(f_{gate}
 \left(x^{(i)}_k\right)\right) f_{feat}\left(x^{(i)}_k\right)
 $$
+
 其中$r^{(i)}$ 被称作“读出器”，是对于整个图的Embedding描述。
 
 ### Set2Set
 
-来自论文 [Order Matters: Sequence to sequence for sets](https://arxiv.org/pdf/1511.06391.pdf)，和Graph attention 有点类似其中加权求和的权重是通过LSTM建模得到的：
+来自论文 [Order Matters: Sequence to sequence for sets](https://arxiv.org/pdf/1511.06391.pdf)，和Graph attention 有点类似，其中加权求和的权重是通过LSTM建模得到的：
 
 $$
 \begin{align}\begin{aligned}q_t &= \mathrm{LSTM} (q^*_{t-1})\\\alpha_{i,t} &= \mathrm{softmax}(x_i \cdot q_t)\\r_t &= \sum_{i=1}^N \alpha_{i,t} x_i\\q^*_t &= q_t \Vert r_t\end{aligned}\end{align}
