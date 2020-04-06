@@ -1,3 +1,12 @@
+---
+layout: article
+title: GNN 教程：Graph 基础知识介绍
+key: GNN_tutorial_basics
+tags: GNN
+category: blog
+pageview: true
+date: 2019-05-31 12:00:00 +08:00
+---
 ## 引言
 
 科学研究中并不是所有的数据都能够被转换到欧几里得空间中（eg：社交网络、信息网络等），导致无法有效地对这些数据进行处理。针对该问题，研究者们引入了图论中抽象意义上的图（Graph）来表示非欧几里得结构化数据。

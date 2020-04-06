@@ -22,4 +22,4 @@ Get in touch with me through csarchwalker `<AT>` gmail `<DOT>` com
 
 Graph Neural Networks series is a collaboration work bettween me and Lianshuo, he is a master student mainly interested in graph neural networks and neural language processing. Thanks for his dedication in this work!
 
-Contect him at yangkm601 `<AT>` gamil `<DOT>` com
+Contact him at yangkm601 `<AT>` gamil `<DOT>` com
