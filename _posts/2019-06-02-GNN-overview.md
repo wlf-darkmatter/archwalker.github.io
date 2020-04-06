@@ -22,3 +22,7 @@ date: 2019-06-02 12:00:00 +08:00
 - [GCN](https://archwalker.github.io/blog/2019/06/01/GNN-Triplets-GCN.html)
 - [GraphSAGE](https://archwalker.github.io/blog/2019/06/01/GNN-Triplets-GraphSAGE.html)
 - [GAT](https://archwalker.github.io/blog/2019/06/01/GNN-Triplets-GAT.html)
+
+2019-06-12: 完成"谱图卷积"模块
+
+- [Spectral Graph](https://archwalker.github.io/blog/2019/06/12/GNN-Spectral-Graph.html)

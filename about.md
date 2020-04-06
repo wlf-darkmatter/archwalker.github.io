@@ -18,7 +18,7 @@ Get in touch with me through csarchwalker `<AT>` gmail `<DOT>` com
 
 **合作者**
 
-图神经网络系列是由我和莲说共同合作撰写的，莲说是一名硕士生，主要研究方向为图神经网络和自然语言处理，非常感谢他在图神经网络系列文章中的合作！他的邮箱是 yangkm601 `<AT>` gmail `<DOT>` com 
+图神经网络系列是由我和莲说共同合作撰写的，莲说是一名硕士研究生，主要研究方向为图神经网络和自然语言处理，非常感谢他在图神经网络系列文章中的合作！他的邮箱是 yangkm601 `<AT>` gmail `<DOT>` com 
 
 Graph Neural Networks series is a collaboration work bettween me and Lianshuo, he is a master student mainly interested in graph neural networks and neural language processing. Thanks for his dedication in this work!
 

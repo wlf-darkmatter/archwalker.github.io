@@ -5,22 +5,32 @@ key: GNN_Theory_Spectral_Graph
 tags: GNN
 category: blog
 pageview: true
-date: 2019-06-12 21:00:00 +08:00
+date: 2019-06-16 21:00:00 +08:00
 ---
 
 # GNN 教程：漫谈谱图理论和GCN的起源
 
-**此为原创文章，转载务必保留[出处](https://archwalker.github.io)**
+**此为原创文章，未经许可，禁止转载**
+
+本篇文章主要受 [如何理解 Graph Convolutional Network? 来自superbrother的回答](https://www.zhihu.com/question/54504471/answer/332657604) 的启发，在此表示感谢！如有侵权，请联系我删除。
 
 ## 引言
 
 图神经网络的逐层更新公式简单优雅而高效，以GCN为例，节点Embedding是由自身和邻居节点Embedding的聚合之后再进行非线性变换而得到。如此简单优雅的更新规则是怎么推导出来的呢，背后有没有什么理论依据？在GCN的论文中，作者介绍了两种启发GCN逐层线性传播法则的方法，分别是从谱图卷积的角度和Weisfeiler-Lehman算法的角度。本篇博文将详细介绍如何从图拉普拉斯矩阵出发，通过定义图上的傅里叶变换和傅里叶逆变换而定义图上卷积公式，最后推导出优雅的GCN逐层更新公式。至于Weisfeiler-Lehman算法，因为涉及到图神经网络的表示能力的问题，后面我们会出一个专题详细的介绍它。
 
+本篇博文的结构是这样的：(下面这段文字对快速理解这篇文章很重要，之后还会出现一次作为小结)
+
+**图神经网络的核心工作是对空间域(Spatial Domain)中节点的Embedding进行卷积操作(即聚合邻居Embedding信息)，然而图数据和图像数据的差别在于节点邻居个数、次序都是不定的，因此传统用于图像上的CNN模型中的卷积操作(Convolution Operator)不能直接用在图上，因此需要从频谱域(Spectral Domain)上重新定义这样的卷积操作再通过卷积定理转换回空间域上。**
+
+**为了在频谱域和空间域中转换，我们借助了傅里叶公式，并且定义了图上傅里叶变换(从空间域变换到频谱域)和图上傅里叶逆变换(从频谱域回到空间域)的变换公式。具体操作是我们将节点的Embedding $f(i), i\in (1, \cdots, N)$通过傅里叶正变换从空间域变换到了频谱域$$\hat{f}$$，在频谱域上和卷积核$h$进行卷积操作，再将变换后的节点Embedding通过傅里叶逆变换回到空间域，参与后续的分类等任务。**
+
+本篇博文是按照上面的思路组织的，下面首先我们来介绍一下什么是空间域和频谱域。
+
 ## Spatial Domain 和Spectral Domain
 
 Spatial domain，翻译过来就是空间域，是最直观感受GCN逐层传播算法的域，即：节点$v$的Embedding是其所有邻居节点Embedding(包括自己的Embedding)的聚合结果。因此在一些文献上spatial domain又被称做"vertex domain"。但是与CNN所应用的图像不同，空间域中图节点邻居的数目不是一定的，而且节点之间没有相对的次序性。这就产生了一个问题，对于不同邻居个数的节点，卷积怎么定义呢？这就引出了spectral domain的概念。spectral domain，即频谱域，借助卷积定理，我们可以通过定义频谱域上的卷积操作来得到空间域图上的卷积操作。
 
-谱图理论主要研究的是图的拉普拉斯(Lapalacian)矩阵的特征值和所对应的特征向量对于图拓扑性质的影响，是对图空间拓扑的数学描述。下面先来介绍什么是拉普拉斯矩阵。
+那么图在频谱域上是如何表示的呢，这就引出了我们第二个概念：**谱图理论**，谱图理论主要研究的是图的拉普拉斯(Lapalacian)矩阵的特征值和所对应的特征向量对于图拓扑性质的影响，是对图空间拓扑的数学描述。下面先来介绍什么是拉普拉斯矩阵。
 
 ## 拉普拉斯矩阵
 
@@ -111,7 +121,7 @@ $$
 $$
 \mathcal{F}^{-1}[F(\omega)]=\frac{1}{2 \Pi} \int F(\omega) e^{i \omega t} d \omega
 $$
-类比到到离散域(图上)则为对特征值$\lambda_l$求和：
+类比到离散域(图上)则为对特征值$\lambda_l$求和：
 $$
 f(i)=\sum_{l=1}^{N} \hat{f}\left(\lambda_{l}\right) u_{l}(i)
 $$
@@ -152,7 +162,7 @@ $$
 
 我们的目的是对空间域中节点的Embedding进行卷积操作(即聚合邻居Embedding信息)，然而图数据和图像数据的差别在于节点邻居个数、次序都是不定的，因此传统用于图像上的CNN模型中的卷积操作(Convolution Operator)不能直接用在图上，因此需要从频谱域上重新定义这样的卷积操作再转换回空间域上(通过卷积定理)。
 
-为了在频谱域和空间域中转换，我们借助了傅里叶公式，并且定义了图上傅里叶变换(从空间域变换到频谱域)和图上傅里叶逆变换(从频谱域域回到空间域)的变换公式。具体操作是我们将节点的Embedding $f(i), i\in (1, \cdots, N)$通过傅里叶正变换从空间域变换到了频谱域$$\hat{f}$$，在频谱域上和卷积核$h$进行卷积操作，再将变换后的节点Embedding通过傅里叶逆变换回到空间域，参与后续的分类等任务。
+为了在频谱域和空间域中转换，我们借助了傅里叶公式，并且定义了图上傅里叶变换(从空间域变换到频谱域)和图上傅里叶逆变换(从频谱域回到空间域)的变换公式。具体操作是我们将节点的Embedding $f(i), i\in (1, \cdots, N)$通过傅里叶正变换从空间域变换到了频谱域$$\hat{f}$$，在频谱域上和卷积核$h$进行卷积操作，再将变换后的节点Embedding通过傅里叶逆变换回到空间域，参与后续的分类等任务。
 
 卷积核$h$通俗来讲可以看做为空间域上的一个矩阵，在频谱域上和节点Embedding进行卷积之前，我们同样要通过傅里叶变换将$h$变换到频谱域$$\hat{h}$$，卷积核和节点Embedding在频谱域上的卷积定义为$\hat{h}\hat{f}$，最后在通过傅里叶逆变换将更新节点的Embedding变回空间域。
 
@@ -160,7 +170,7 @@ $$
 
 ## GCN 结构的演进
 
-### 演进 1
+### 演进 1 - naive method
 
 上文中定义的图卷积操作
 $$
@@ -181,7 +191,7 @@ $$
 1. 每一次前向传播(每计算一次$y_{out}$)，都要计算$U$， $g_\theta(\Lambda)$和$U^\top$三者的矩阵乘积，运算复杂度为$$\mathcal{O}(n^3)$$
 2. 卷积核是由$$\theta_1, \cdots, \theta_n$$ 这样$n$个参数构成的，其中$n$是图中的节点数，对于非常大的图，模型的自由度过高
 
-### 演进 2
+### 演进 2 - 减少参数数量
 
 上面提到卷积核由$n$个自由的参数构成，在一些情况下，我们不希望模型的参数过多，否则在数据量不够的情况下，模型可能陷入欠拟合的情况，因此在[Convolutional Neural Networks on Graphs with Fast Localized Spectral Filtering](http://arxiv.org/abs/1606.09375)中作者提出了一种多项式近似方法：
 $$
@@ -219,7 +229,7 @@ $$
 
 但是，这种方法仍然没有从根本上解决计算复杂度的问题，因为仍需要求解$L^j$，其复杂度为$$\mathcal{O}(n^3)$$。
 
-### 演进 3
+### 演进 3 - 降低计算复杂度
 
 演进2中使用多项式近似的方式避免对$L$进行谱分解，且降低了模型的自由度，但是并没有降低卷积计算的复杂度，论文[Wavelets on graphs via spectral graph theory](https://hal.inria.fr/inria-00541855)中提出了一种用Chebyshev多项式近似卷积核的方法，可以用来降低卷积运算的复杂度。定义为：
 $$
@@ -280,6 +290,8 @@ $$
 
 ## Reference
 
+[如何理解 Graph Convolutional Network? 来自superbrother的回答](https://www.zhihu.com/question/54504471/answer/332657604)
+
 [The Emerging Field of Signal Processing on Graphs: Extending High-Dimensional Data Analysis to Networks and Other Irregular Domains](https://arxiv.org/abs/1211.0053) 
 
 [Spectral Networks and Locally Connected Networks on Graphs](https://arxiv.org/abs/1312.6203) 
@@ -289,8 +301,6 @@ $$
 [Wavelets on graphs via spectral graph theory](https://hal.inria.fr/inria-00541855)
 
 [Semi-Supervised Classification with Graph Convolutional Networks](https://arxiv.org/abs/1609.02907) 
-
-[如何理解 Graph Convolutional Network? 来自superbrother的回答](https://www.zhihu.com/question/54504471/answer/332657604)
 
 
 
