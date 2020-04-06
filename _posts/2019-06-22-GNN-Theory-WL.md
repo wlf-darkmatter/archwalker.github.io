@@ -38,7 +38,7 @@ $$
 
 
 
-![](https://i.imgur.com/9XzFxD9.png)
+![](http://ww4.sinaimg.cn/large/006tNc79ly1g4b9uksv5oj30i3079q2z.jpg)
 > 给定图 $G$ 和 $G'$
 
 如何比较 $G$ 和 $G'$的相似性问题呢？Weisfeiler-lehman 算法的思路如下：
@@ -46,17 +46,17 @@ $$
 step 1、对邻居节点标签信息进行聚合，以获得一个带标签的字符串（整理默认采用升序排序的方法进行排序）。
 
 
-![](https://i.imgur.com/IJqgR8Q.png)
+![](http://ww3.sinaimg.cn/large/006tNc79ly1g4b9ulogquj30ia077mxc.jpg)
 
 > 第一步的结果，这里需要注意，图中利用逗号将两部分进行分开，第一部分是该节点的ID，第二部分是该节点的邻居节点ID按升序排序的结构（eg：对于节点 5，他的邻居节点为2，3，4，所以他的结果为"5,234"）
 
 step 2、为了能够生成一个一一对应的字典，我们将每个节点的字符串hash处理后得到节点的新ID。
 
-![](https://i.imgur.com/lkbu5M3.png)
+![](http://ww4.sinaimg.cn/large/006tNc79ly1g4b9umk7qfj30e40560sl.jpg)
 
 step 3、将哈希处理过的ID重新赋值给相应的结点，以完成第一次迭代。
 
-![](https://i.imgur.com/rxT5tn2.png)
+![](http://ww4.sinaimg.cn/large/006tNc79ly1g4b9uok3fhj30hx07374c.jpg)
 
 第一次迭代的结果为：$G={6、6、8、10、11、13}，G'={6，7，9，10，12，13}$。这样即可以获得图中每个节点ID。接下去，可以采用 Jaccard 公式计算$G$ 和 $G'$的相似度。如果两个图同构的话，在迭代过程中$G$和$G'$将会相同。
 
