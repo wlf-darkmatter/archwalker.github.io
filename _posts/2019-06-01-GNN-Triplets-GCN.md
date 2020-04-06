@@ -95,12 +95,12 @@ $$
 我们把上述定义进一步泛化：输入信号$X\in \mathbb{R}^{N\times C}$, 每个输入信号有$C$个通道(channels, 即每个图节点有$C$维特征)，卷积包含$F$个滤波器(filters)或特征映射(feature maps), 如下：
 
 $$
-Z=\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} X W
+Z=\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} X \Theta
 $$
 
-其中$$W\in \mathbb{R}^{C\times F}$$ 是filters的参数矩阵, $Z\in \mathbb{R}^{N\times F}$ 是卷积之后的信号矩阵。这样的转化操作的时间复杂度为$$\mathcal{O}(\vert\mathcal{E}\vert FC)$$, 因为$$\tilde{A}X$$能够被高效的以稀疏矩阵和稠密矩阵相乘的形式实现。
+其中$$\Theta\in \mathbb{R}^{C\times F}$$ 是filters的参数矩阵, $Z\in \mathbb{R}^{N\times F}$ 是卷积之后的信号矩阵。这样的转化操作的时间复杂度为$$\mathcal{O}(\vert\mathcal{E}\vert FC)$$, 因为$$\tilde{A}X$$能够被高效的以稀疏矩阵和稠密矩阵相乘的形式实现。
 
-$X$是输入向量，神经网络通常有多层，我们习惯于把$X$变换后的向量记做$H$，表示节点在隐藏层的embedding, $W$表示神经网络的权重，输出$Z$会变成下一层的输入，因此在多层的图神经网络中，更新公式为
+$X$是输入向量，神经网络通常有多层，我们习惯于把$X$变换后的向量记做$H$，表示节点在隐藏层的embedding, 其次，我们习惯将神经网络的参数表示为$W$而非$\Theta$，输出$Z$会变成下一层的输入，做完这些符号替换后，多层图神经网络的Embedding更新公式为
 $$
 H^{(l+1)}=\sigma\left(\tilde{D}^{-\frac{1}{2}}\tilde{A} \tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}\right)
 $$
