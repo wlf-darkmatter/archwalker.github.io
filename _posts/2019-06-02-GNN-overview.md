@@ -25,4 +25,4 @@ date: 2019-06-02 12:00:00 +08:00
 
 2019-06-12: 完成"谱图卷积"模块
 
-- [Spectral Graph](https://archwalker.github.io/blog/2019/06/12/GNN-Spectral-Graph.html)
+- [Spectral Graph](https://archwalker.github.io/blog/2019/06/16/GNN-Spectral-Graph.html)
