@@ -208,8 +208,9 @@ $$
 
 这种模型固然简单，但是存在着一些问题：
 
-1. 每一次前向传播(每计算一次$y_{out}$)，都要计算$U$， $g_\theta(\Lambda)$和$U^\top$三者的矩阵乘积，运算复杂度为$$\mathcal{O}(n^3)$$
-2. 卷积核是由$$\theta_1, \cdots, \theta_n$$ 这样$n$个参数构成的，其中$n$是图中的节点数，对于非常大的图，模型的自由度过高
+1. $U$是拉普拉斯矩阵$L$的特征矩阵，而特征分解的复杂度为$$\mathcal{O}(n^3)$$，当节点个数很多的时候这个方法不适用
+2. 每一次前向传播(每计算一次$y_{out}$)，都要计算$U$， $g_\theta(\Lambda)$和$U^\top$三者的矩阵乘积，计算量很大
+3. 卷积核是由$$\theta_1, \cdots, \theta_n$$ 这样$n$个参数构成的，其中$n$是图中的节点数，对于非常大的图，模型的自由度过高
 
 ### 演进 2 - 减少参数数量
 
@@ -219,7 +220,7 @@ $$
 \hat{h}(\lambda_i) = \sum^K_{j=0}\alpha_j\lambda_i^j
 $$
 
-其中$$\lambda_i^j$$表示$$\lambda_j$$的 $j$ 次幂，即
+其中$$\lambda_i^j$$表示$$\lambda_i$$的 $j$ 次幂，即
 
 $$
 y_{out} = \sigma(U g_\theta(\Lambda)U^\top x) \\
@@ -258,7 +259,7 @@ $$
 
 ### 演进 3 - 降低计算复杂度
 
-演进2中使用多项式近似的方式避免对$L$进行谱分解，且降低了模型的自由度，但是并没有降低卷积计算的复杂度，论文[Wavelets on graphs via spectral graph theory](https://hal.inria.fr/inria-00541855)中提出了一种用Chebyshev多项式近似卷积核的方法，可以用来降低卷积运算的复杂度。定义为：
+演进2中使用多项式近似的方式避免对$L$进行谱分解，且降低了模型的自由度，但是并没有降低卷积计算的复杂度，论文[Wavelets on graphs via spectral graph theory](https://hal.inria.fr/inria-00541855)中提出了一种用Chebyshev多项式近似卷积核的方法，可以用来降低卷积运算的复杂度。因为这篇文章的作者借鉴了他们的思路，利用Chebyshev多项式近似，定义为：
 
 $$
 g_\theta(\Lambda)\approx\sum_{k=0}^{K}\theta_kT_k(\tilde{\Lambda})
