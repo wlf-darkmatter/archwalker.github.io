@@ -28,12 +28,11 @@ GNN的各种模型在近两年来非常火热，在各个会议、期刊上新�
 
 这篇论文是可谓是图神经网络的开山之作，在我们前序的[博文](https://archwalker.github.io/blog/2019/06/01/GNN-Triplets-GCN.html)中也有解析，文中提出了一个简单且有效的图卷积算法：
 
-
 $$
 h_i^{(l+1)} = \sigma(b^{(l)} + \sum_{j\in\mathcal{N}(i)}\frac{1}{c_{ij}}h_j^{(l)}W^{(l)})
 $$
 
-其中 $$\mathcal{N}(i)$$ 表示节点$i$的邻居节点，$c_{ij}=\sqrt{|\mathcal{N}(i)|}\sqrt{|\mathcal{N}(j)|}$ 是正则化项，这个公式的思想很简单，节点$i$更新后的Embedding为邻居节点Embedding的加权表示。在论文的实现中，$W^{(l)}$ 以*Glorot uniform initialization* 的方式初始化，$b^{(l)}$被初始化为0。
+其中 $$\mathcal{N}(i)$$ 表示节点$i$的邻居节点，$c_{ij}=\sqrt{\vert\mathcal{N}(i)\vert}\sqrt{\vert\mathcal{N}(j)\vert}$ 是正则化项，这个公式的思想很简单，节点$i$更新后的Embedding为邻居节点Embedding的加权表示。在论文的实现中，$W^{(l)}$ 以*Glorot uniform initialization* 的方式初始化，$b^{(l)}$被初始化为0。
 
 ### RelGraphConv
 
@@ -46,7 +45,7 @@ h_i^{(l+1)} = \sigma(\sum_{r\in\mathcal{R}}
 \sum_{j\in\mathcal{N}^r(i)}\frac{1}{c_{i,r}}W_r^{(l)}h_j^{(l)}+W_0^{(l)}h_i^{(l)})
 $$
 
-式中 $$\mathcal{N}^r(i)$$ 表示在边类型为$r$时节点$i$的邻居节点，$c_{i,r}=|\mathcal{N}^r(i)|$是正则化项，$$ W_r^{(l)} = \sum_{b=1}^B a_{rb}^{(l)}V_b^{(l)}$$ 是对$W_r$的基向量分解，这样分解的原因是如果有太多种的边类型的时候，通过分解，只需要学习基向量$V_b^{(l)}$，减少欠拟合的风险。
+式中 $$\mathcal{N}^r(i)$$ 表示在边类型为$r$时节点$i$的邻居节点，$c_{i,r}=\vert\mathcal{N}^r(i)\vert$是正则化项，$$ W_r^{(l)} = \sum_{b=1}^B a_{rb}^{(l)}V_b^{(l)}$$ 是对$W_r$的基向量分解，这样分解的原因是如果有太多种的边类型的时候，通过分解，只需要学习基向量$V_b^{(l)}$，减少欠拟合的风险。
 
 ## TAGConv
 
@@ -74,7 +73,7 @@ $$
 其中 $\alpha_{i,j}$是邻居$j$对节点$i$的相对重要性权重，是通过下式学习得到的：
 
 $$
-\begin{align}\begin{aligned}\alpha_{ij}^{l} & = \mathrm{softmax_i} (e_{ij}^{l})\\e_{ij}^{l} & = \mathrm{LeakyReLU}\left(\vec{a}^T [W h_{i} \| W h_{j}]\right)\end{aligned}\end{align}
+\begin{align}\begin{aligned}\alpha_{ij}^{l} & = \mathrm{softmax_i} (e_{ij}^{l})\\e_{ij}^{l} & = \mathrm{LeakyReLU}\left(\vec{a}^T [W h_{i} \\vert W h_{j}]\right)\end{aligned}\end{align}
 $$
 
 值得一提的是，同年的ICLR上，还有一篇关于Graph Attention的论文 [Attention-based Graph Neural Network for Semi-supervised Learning](https://arxiv.org/abs/1803.03735) 文章的主要思想是根据当前节点和邻居节点Embedding的cosine相似度作为Attention的加权因子，做了详细的实验和分析。
@@ -140,7 +139,7 @@ $$
 来自论文 [Gated Graph Sequence Neural Networks](https://arxiv.org/pdf/1511.05493.pdf)，这篇论文是一篇早期的探索图神经网络中的长依赖的论文，一作是来自多伦多大学的Yujia Li，论文利用了时序建模中的GRU模块：
 
 $$
-\begin{align}\begin{aligned}h_{i}^{0} & = [ x_i \| \mathbf{0} ]\\a_{i}^{t} & = \sum_{j\in\mathcal{N}(i)} W_{e_{ij}} h_{j}^{t}\\h_{i}^{t+1} & = \mathrm{GRU}(a_{i}^{t}, h_{i}^{t})\end{aligned}\end{align}
+\begin{align}\begin{aligned}h_{i}^{0} & = [ x_i \\vert \mathbf{0} ]\\a_{i}^{t} & = \sum_{j\in\mathcal{N}(i)} W_{e_{ij}} h_{j}^{t}\\h_{i}^{t+1} & = \mathrm{GRU}(a_{i}^{t}, h_{i}^{t})\end{aligned}\end{align}
 $$
 
 可以看到，和之前介绍的GNN模型不同，邻居节点汇聚后Embedding $a_i^t$不再直接加到自身Embedding上(GCN)，也不再直接concat到自身Embedding上(GraphSAGE)，而是采用GRU的方式汇聚，以保持对长依赖的建模。
