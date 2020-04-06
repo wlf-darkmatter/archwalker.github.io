@@ -11,7 +11,7 @@ date: 2019-06-02 12:00:00 +08:00
 
 图神经网络是表征学习中兴起的一个新方向，本博客将以论文带读的方式讨论图神经网络的最新进展。下图展示了目前的规划：
 
-![overview](http://ww2.sinaimg.cn/large/006tNc79ly1g3od5neoavj316o0mgadj.jpg)
+![Screen Shot 2019-06-20 at 8.13.05 PM](http://ww1.sinaimg.cn/large/006tNc79ly1g47vul0a5lj31j20oin3c.jpg)
 
 这篇博文会记录进度，预计每一周或两周完成一个模块，规划也会随时更新。
 
