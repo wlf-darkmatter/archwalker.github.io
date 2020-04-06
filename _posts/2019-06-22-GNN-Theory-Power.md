@@ -9,11 +9,11 @@ date: 2019-06-22 12:00:00 +08:00
 ---
 ## 引言
 
-前面的文章中，我们介绍了GNN的三个基本模型GCN、GraphSAGE、GAT，分析了经典的GCN逐层传播公式是如何由谱图卷积推导而来的。GNN模型现在正成为学术研究的热点话题，那么我们不经想问，GNN模型到底有多强呢？之前的[文章](https://archwalker.github.io/blog/2019/06/22/GNN-Theory-WL.html)我们介绍了用来衡量CNN表达能力的算法—Weisfeiler-Leman，这篇文章我们将以该算法为基础，向大家介绍ICLR 2019的oral论文 [How powerful are graph neural networks](http://arxiv.org/abs/1810.00826) 。
+前面的文章中，我们介绍了GNN的三个基本模型GCN、GraphSAGE、GAT，分析了经典的GCN逐层传播公式是如何由谱图卷积推导而来的。GNN模型现在正成为学术研究的热点话题，那么我们不经想问，GNN模型到底有多强呢？之前的[文章](https://archwalker.github.io/blog/2019/06/22/GNN-Theory-WL.html)我们介绍了用来衡量GNN表达能力的算法—Weisfeiler-Leman，这篇文章我们将以该算法为基础，向大家介绍ICLR 2019的oral论文 [How powerful are graph neural networks](http://arxiv.org/abs/1810.00826) 。
 
 ## 图神经网络 Graph Neural Network
 
-GNNs 利用图结构和节点特征$X_0$学习图节点的表示(embeddings)$h_v$，或者整个图的表示$h_G$。前面我们介绍了GCN、GraphSAGE和GAT这三种模型，图内节点都是通过各种聚合邻居的策略(neighborhood aggregation strategy)迭代式更新的，在$K$步迭代之后，每个节点的Embedding都融合了它$k$ hop所有邻居的信息。转化成数学形式：
+GNNs 利用图结构和节点初始特征$X_0$学习图节点的表示(embeddings)$h_v$，或者整个图的表示$h_G$。前面我们介绍了GCN、GraphSAGE和GAT这三种模型，图内节点都是通过各种聚合邻居的策略(neighborhood aggregation strategy)迭代式更新的，在$K$步迭代之后，每个节点的Embedding都融合了它$k$ hop所有邻居的信息。转化成数学形式：
 
 $$
 a_{v}^{(k)}=\text { AGGREGATE }^{(k)}\left(\left\{h_{u}^{(k-1)} : u \in \mathcal{N}(v)\right\}\right)
