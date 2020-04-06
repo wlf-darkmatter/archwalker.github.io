@@ -40,5 +40,12 @@ date: 2019-06-02 12:00:00 +08:00
 
 - [DGL sampler](https://archwalker.github.io/blog/2019/06/30/GNN-Framework-DGL-NodeFlow.html)
 
-  
+2019-07-07："框架模块"
+
+- [DGL message passing](https://archwalker.github.io/blog/2019/07/07/GNN-Framework-DGL-DistributedTraining.html)
+- [DGL large scale training](https://archwalker.github.io/blog/2019/07/07/GNN-Framework-DGL-GCN.html)
+
+2019-07-18："无监督学习模块"
+
+- [Graph Pretrain 0](https://archwalker.github.io/blog/2019/07/07/GNN-Pretrain-0.html)
 
