@@ -9,7 +9,7 @@ key: page-about
 
 **Bio**
 
-I am Zhou Qin, an algorithm engineer interested in graph neural networks, distributed systems, and functional programming. I graduated from Cornell University as an M.Eng in computer science student in May. 2018, and then joined Alibaba Group, working with the commodity risk management team. Before that, I achieved my B.Eng degree (also major in computer science) in South China University of Technology. Cheek my [Resume](https://github.com/archwalker/archwalker.github.io/blob/master/_posts/Curriculum_Vitae.pdf) for details.
+I am Zhou Qin, an algorithm engineer interested in graph neural networks, distributed systems, and functional programming. I graduated from Cornell University as an M.Eng in computer science student in May. 2018, and then joined Alibaba Group, working with the commodity risk management team. Before that, I achieved my B.Eng degree (also major in computer science) in South China University of Technology. Check my [Resume](https://github.com/archwalker/archwalker.github.io/blob/master/_posts/Curriculum_Vitae.pdf) for details.
 
 Personally, I'd like to do some in-depth research beneath a machine learning model (i.e. seeking mathematical explanations). I am now mainly focusing on applying graph neural networks into our commodity risk management business scenario.
 
