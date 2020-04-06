@@ -7,7 +7,6 @@ category: blog
 pageview: true
 date: 2019-06-01 23:00:00 +08:00
 ---
-# GNN 教程: GAT
 **此为原创文章，转载务必保留[出处](https://archwalker.github.io)**
 
 ## 引言

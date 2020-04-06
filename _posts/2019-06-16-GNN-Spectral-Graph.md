@@ -7,8 +7,6 @@ category: blog
 pageview: true
 date: 2019-06-16 21:00:00 +08:00
 ---
-# GNN 教程：漫谈谱图理论和GCN的起源
-
 **此为原创文章，未经许可，禁止转载**
 
 本篇文章主要受 [如何理解 Graph Convolutional Network? 来自superbrother的回答](https://www.zhihu.com/question/54504471/answer/332657604) 的启发，在此表示感谢！如有侵权，请联系我删除。
