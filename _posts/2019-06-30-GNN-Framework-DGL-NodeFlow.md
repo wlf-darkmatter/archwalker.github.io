@@ -1,11 +1,11 @@
 ---
 layout: article
-title: GNN 教程：DGL框架
-key: GNN_tutorial_framework_dgl
+title: GNN 教程：DGL框架-子图和采样
+key: GNN_tutorial_framework_dgl_sampler
 tags: GNN
 category: blog
 pageview: true
-date: 2019-06-30 15:00:00 +08:00
+date: 2019-07-07 20:30:00 +08:00
 ---
 **此为原创文章，转载务必保留[出处](https://archwalker.github.io)**
 ## 引言
@@ -132,14 +132,14 @@ for epoch in range(num_epochs):
 
 ### Control Variate
 
-通过采样而估计的$\hat{Z}^{(\cdot)}$是无偏的，但是方差会较大，因此需要采大量的邻居样本来减少方差，因此在GraphSAGE的原论文中，作者设定了$D^{(0)}=25$，$D^{(1)}=10$。control variate是用于Monte Carlo方法中的一种标准的减少方差的的技术，通过使用它，每一个hop采样两个邻居看起来就足够了。
+通过采样而估计的$\hat{Z}^{(\cdot)}$是无偏的，但是方差会较大，因此需要采大量的邻居样本来减少方差，因此在GraphSAGE的原论文中，作者设定了$D^{(0)}=25$，$D^{(1)}=10$。但是这样做在每一次采样中我们都有大量的邻居需要聚合，因此control variate和核心思路是缓存历史上计算过的聚合值$\bar{h}_n^{(l)}$，根据$\bar{h}_n^{(l)}$和本次采样的邻居共同估计$h_v^{(l)}$，同时在每一轮中更新$\bar{h}_n^{(l)}$。通过使用这种计算，每一个节点采样两个邻居就足够了。
 
-Control variate方法是这样工作的：给定随机变量$X$，我们想要估计它的期望$\mathbb{E}[X] = \theta$，为此我们寻找另一个随机变量$Y$，$Y$和$X$强相关并且$Y$的期望$\mathbb{E}[Y]$能够被轻松地计算得到。通过$Y$估计$X$期望的近似值$\tilde{X}$ 可以表示为：
+Control variate方法的原理为：给定随机变量$X$，我们想要估计它的期望$\mathbb{E}[X] = \theta$，为此我们寻找另一个随机变量$Y$，$Y$和$X$强相关并且$Y$的期望$\mathbb{E}[Y]$能够被轻松地计算得到。通过$Y$估计$X$期望的近似值$\tilde{X}$ 可以表示为：
 $$
 \tilde{X}=X-Y+\mathbb{E}[Y]\\
 \mathbb{V} \mathbb{A} \mathbb{R}[\tilde{X}]=\mathbb{VAR}[X]+\mathbb{VAR}[Y]-2 \cdot \mathbb{COV}[X, Y]\\
 $$
-[Chen et al.](https://arxiv.org/abs/1710.10568) 提出了一种基于control variate的方法用于GCN的训练过程，假设在每一个hop中我们只采样非常少的邻居，那么未采到的邻居节点Embedding $\bar{H}^{(l)}$的数量较多，可以用来很好地故居邻居样本总体均值。更改后的评估器$\hat{Z}_v^{(l+1)}$表示为：
+具体到我们的场景上，$X$是某次采样节点邻居的聚合，$Y$是该节点所有邻居的聚合。基于control variate的方法训练GCN的过程为：
 $$
 \begin{align}
 \hat{z}_{v}^{(l+1)}&=\frac{|\mathcal{N}(v)|}{\left|\hat{\mathcal{N}}^{(l)}(v)\right|} \sum_{u \in \hat{\mathcal{N}}^{(l)}(v)} \tilde{A}_{u v}\left(\hat{h}_{u}^{(l)}-\overline{h}_{u}^{(l)}\right)+\sum_{u \in \mathcal{N}(v)} \tilde{A}_{u \nu} \overline{h}_{u}^{(l)}\\
@@ -183,7 +183,7 @@ for i in range(L):
         nf.copy_to_parent()
 ```
 
-上文代码中，`nf`是`NeighborSampler`返回的对象，在`nf`的对象的每一个`block`内，首先调用`pull`函数
+上文代码中，`nf`是`NeighborSampler`返回的对象，在`nf`的对象的每一个`block`内，首先调用`pull`函数获取$\hat{h}^{(l)}$(即代码中的`agg_h_{}`)，然后计算$\bar{h}_u^{(l)}$和$\hat{h}_u^{(l)}-\bar{h}_u^{(l)}$(即代码中的`delta_h`和`agg_h`)，最后将更新后的结果拷贝回原大图中。
 
 ## 后话
 
