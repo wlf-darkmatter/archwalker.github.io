@@ -29,5 +29,4 @@ date: 2019-06-02 12:00:00 +08:00
 
 2019-06-19: 有同学反馈对图的基本概念不是很了解，于是加上了一个基本介绍
 
-- [GNN Basics](<https://archwalker.github.io/2019/05/31/GNN-basics.html)
-
+- [GNN Basics](https://archwalker.github.io/blog/2019/05/31/GNN-basics.html)
