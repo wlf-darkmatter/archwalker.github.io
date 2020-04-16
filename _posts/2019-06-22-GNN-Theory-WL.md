@@ -38,7 +38,7 @@ $$
 
 给定两个图$G$和$G'$，其中每个节点的Embedding为这个节点的标签（实际应用中，有些时候我们并拿不到节点的标签，这时可以对节点都标上一个相同的标签如"1"，这个时候我们将完全用节点位于图中的结构信息来区分节点，因为他们的Embedding都相同）
 
-![Screen Shot 2020-04-16 at 10.37.05](Screen Shot 2020-04-16 at 10.37.05.png)
+![Screen Shot 2020-04-16 at 10.37.05](https://tva1.sinaimg.cn/large/007S8ZIlly1gdvfcr0tnpj317a0pwgpl.jpg)
 
 > 给定图 $G$ 和 $G'$
 
@@ -47,17 +47,17 @@ $$
 step 1、对邻居节点标签信息进行聚合，以获得一个带标签的字符串（整理默认采用升序排序的方法进行排序）。
 
 
-![Screen Shot 2020-04-16 at 10.38.27](Screen Shot 2020-04-16 at 10.38.27.png)
+![Screen Shot 2020-04-16 at 10.38.27](https://tva1.sinaimg.cn/large/007S8ZIlly1gdvfcrlw6dj31js0pugrv.jpg)
 
 > 第一步的结果，这里需要注意，图中利用逗号将两部分进行分开，第一部分是该节点的ID，第二部分是该节点的邻居节点ID按升序排序的结构（eg：对于节点 5，他的邻居节点为2，3，4，所以他的结果为"5,234"）
 
 step 2、为了能够生成一个一一对应的字典，我们将每个节点的字符串hash处理后得到节点的新ID。
 
-![Screen Shot 2020-04-16 at 10.39.07](Screen Shot 2020-04-16 at 10.39.07.png)
+![Screen Shot 2020-04-16 at 10.39.07](https://tva1.sinaimg.cn/large/007S8ZIlly1gdvfcza5d4j317e0pw0vt.jpg)
 
 step 3、将哈希处理过的ID重新赋值给相应的结点，以完成第一次迭代。
 
-![Screen Shot 2020-04-16 at 10.39.30](Screen Shot 2020-04-16 at 10.39.30.png)
+![Screen Shot 2020-04-16 at 10.39.30](https://tva1.sinaimg.cn/large/007S8ZIlly1gdvfd371d3j318o0pu78s.jpg)
 
 第一次迭代的结果为：$G={6、6、8、10、11、13}，G'={6，7，9，10，12，13}$。这样即可以获得图中每个节点ID。接下去，可以采用 Jaccard 公式计算$G$ 和 $G'$的相似度。如果两个图同构的话，在迭代过程中$G$和$G'$将会相同。
 
