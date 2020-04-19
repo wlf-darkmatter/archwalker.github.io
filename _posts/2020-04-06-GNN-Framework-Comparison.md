@@ -53,7 +53,7 @@ GL是从阿里内部业务场景出发抽象出来的图神经网络框架，首
 
 我们将GNN的算法流程抽象成以下步骤：
 
-![3](https://yqfile.alicdn.com/340df03adab4e3daab6e4b51bdc74820afd2dfde.png)
+![3](https://tva1.sinaimg.cn/large/007S8ZIlly1gdyy2iset7j30yk0iiaeb.jpg)
 
 其中AGGREGATE的功能类似于PyG中的$\square$和$\phi$，而COMBINE的功能类似于PyG中的$\gamma$，而SAMPLE就是用来返回节点邻居的函数，实现上SAMPLE内部进行了非常多的系统端优化，以至于整个采样的时间相较于训练基本可以忽略不计。当然，虽然它的名字叫SAMPLE采样，但是对于像GCN和GAT这种需要全部邻居参与计算的模型，我们也提供了能够返回全部邻居的接口。对于一个batch的数据，由于每个节点的邻居数据是不定的，这时候全邻居SAMPLE的返回结果将会被封装成一个SparseTensor，并为每个源节点提供必要的邻居定位信息segment_ids以供下游算法使用。
 
