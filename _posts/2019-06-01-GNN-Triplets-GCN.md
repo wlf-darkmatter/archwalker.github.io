@@ -14,49 +14,53 @@ date: 2019-06-01 21:00:00 +08:00
 
 ## 问题定义
 
-考虑图（例如引文网络）中节点（例如文档）的分类问题，通常该图中只有一小部分节点有标签。这类问题可以划分到基于图的半监督学习问题中。为了对节点进行分类，首先我们可以利用节点自身的特征信息，除此之外，我们还可以利用图结构信息，因此一个典型的图半监督学习问题可以采用下面的学习策略：
+考虑图（例如引文网络）中节点（例如文档）的分类问题，假设该图中只有一小部分节点标签（label）是已知的，我们的分类任务是想通过这部分已知标签的节点和图的结构来推断另一部分未知标签的节点的标签。这类问题可以划分到基于图结构数据的半监督学习问题中。半监督学习（semi-supervised learning）是有监督学习的一个分支，主要研究的是如何利用少量的有标签数据学习大量无标签数据的标签。
 
+为了对节点进行分类，首先我们可以利用节点自身的特征信息，除此之外，我们还可以利用图结构信息，因此一个典型的图半监督学习问题可以对两个损失函数一起优化：
 $$
-\mathcal{L}=\mathcal{L}_{0}+\lambda \mathcal{L}_{\mathrm{reg}} \tag{1}
+\mathcal{L}=\mathcal{L}_{labeled}+\lambda \mathcal{L}_{\mathrm{reg}} \tag{1}
 $$
 
+其中， $$\mathcal{L}_{labeled}$$ 基于基于标签数据的损失函数（loss function），$$\mathcal{L}_{reg}$$ 代表基于图结构信息的损失函数，$\lambda$ 是调节这两种损失函数相对重要性的超参（hyperparameter）。
+
+一般来说，基于图结构信息的损失函数可以表示成：
 $$
 \mathcal{L}_{\mathrm{reg}}=\sum_{i, j} A_{i j}\left\|f\left(X_{i}\right)-f\left(X_{j}\right)\right\|^{2}=f(X)^{\top} \Delta f(X) \tag{2}
 $$
 
-其中， $$\mathcal{L}_{0}$$ 表示图中带标签节点的监督损失，$$\mathcal{L}_{reg}$$ 代表图结构信息引入的损失， $f(\cdot)$ 类似神经网络的可微分函数， $\lambda$ 为权重系数，$X$为节点特征向量$X_i$的矩阵，$\Delta=D-A$表示无向图$\mathcal{G}=(\mathcal{V}, \mathcal{E})$的未正则化图拉普拉斯算子。$\mathcal{G}=(\mathcal{V}, \mathcal{E})$ 中，节点$v_{i} \in \mathcal{V}$共$N$个，边$\left(v_{i}, v_{j}\right) \in \mathcal{E}$， 邻接矩阵$A \in \mathbb{R}^{N \times N}$（可以是二值的(bianry)，也可以是加权的(weighted)），度矩阵$D_{i i}=\sum_{j} A_{i j}$。
+其中，$f(\cdot)$ 是类似神经网络的可微分函数， 在无向图$\mathcal{G}=(\mathcal{V}, \mathcal{E})$ 中，假设有$N$个节点$v_{i} \in \mathcal{V}$，$X$为节点特征向量构成的矩阵，其中$X_i$表示节点$v_i$的特征向量，边$\left(v_{i}, v_{j}\right) \in \mathcal{E}$， 邻接矩阵表示为$A \in \mathbb{R}^{N \times N}$（可以是二值的(bianry)，也可以是加权的(weighted)），度矩阵$D_{i i}=\sum_{j} A_{i j}$。$\Delta=D-A$表示无向图$\mathcal{G}=(\mathcal{V}, \mathcal{E})$的未正则化图拉普拉斯算子。这样的损失函数希望对相邻节点的特征向量做限制，希望它们能尽量相近。
 
-这样的学习策略基于图中的相邻节点标签可能相同的假设。然而，这个假设可能会限制模型的能力，因为图的边不一定代表所连接节点相似。
+显然，这样的学习策略基于图中的相邻节点标签可能相同的假设（因为损失函数要求相邻节点的特征向量尽量相似，如何他们的标签不相似的话，那么不能学习到一个从特征向量到标签的有效映射）。然而，这个假设可能会限制模型的能力，因为图的边在语义上不一定代表所连接节点相似。还有一种可能是图中有大量的噪声边。
 
 因此，在这个工作中，作者不再显示的定义图结构信息的损失函数 $$\mathcal{L}_{reg}$$ , 而是使用神经网络模型$f(X, A)$直接对图结构进行编码，训练所有带标签的结点$$\mathcal{L}_{0}$$，来避免损失函数中的正则化项$$\mathcal{L}_{reg}$$。
 
 
-这篇文章的主要贡献是为图半监督分类任务设计了一个简单并且效果好的神经网络模型，这个模型由谱图卷积(spectral graph convolution)的一阶近似推导而来，具有理论基础。
+这篇文章的主要贡献是为图半监督分类任务设计了一个简单并且效果好的神经网络模型，且这个模型由谱图卷积(spectral graph convolution)的一阶近似推导而来，具有理论基础。
 
 
 
 
 ## 图上的快速卷积近似
-> 这一节介绍如何从谱图卷积推导出GCN的逐层更新模型，涉及到一些谱图理论的知识，可以安全的跳过这一节，后面我们会为谱图卷积出一个专栏的文章，详细讨论它们
+> 这一节介绍如何从谱图卷积推导出GCN的逐层更新模型，涉及到一些谱图理论的知识，可以安全的跳过这一节，后面我们会为谱图卷积专门出一个专栏的文章，将详细讨论它们
 >
 
-这一节主要介绍图神经网络逐层更新(propagation)的理论推导。多层图卷积网络(Graph Convolutional Network, GCN)的逐层传播公式：
+这一节主要介绍图卷积网络GCN逐层更新(propagation)的理论推导。多层图卷积网络(Graph Convolutional Network, GCN)的逐层传播公式：
 
 $$
 H^{(l+1)}=\sigma\left(\tilde{D}^{-\frac{1}{2}}\tilde{A} \tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}\right)
 $$
 
-其中，$$\tilde{A}=A + I_N$$表示无向图$$\mathcal{G}$$加上了自连接后的邻接矩阵，$$\tilde{D}_{ii}=\sum_j\tilde{A}_{ij}$$是每个节点的度，$W^{(l)}$是$l$层可学习的参数。$H^{(l)}\in\mathbb{R}^{N\times D}$是$l$层激活后的节点Embedding值，输入层$H^{(0)}=X$.
-下面我们会重点介绍这个逐层的更新规则可以由**图上的局部谱滤波(Localized spectral filters)的一阶近似**推导而来。(另一种解释是基于Weisfeiler-Lehman算法的，见论文的附录A)
+其中，$$\tilde{A}=A + I_N$$表示无向图$$\mathcal{G}$$加上了自连接后的邻接矩阵，$$\tilde{D}_{ii}=\sum_j\tilde{A}_{ij}$$是每个节点的度，$W^{(l)}$是$l$层可学习的参数。$H^{(l)}\in\mathbb{R}^{N\times D}$是第$l$层激活后的节点Embedding值，输入层$H^{(0)}=X$.
+下面我们会重点介绍这个逐层的更新规则可以由**图上的局部谱滤波(Localized spectral filters)的一阶近似**推导而来。(另一种解释是基于Weisfeiler-Lehman算法的，见论文的附录A，之后也会有一篇文章详细讨论这个算法)
 
 ### 谱图卷积(Spectral Graph Convolutions)
-谱图卷积是这样定义的：信号$x\in\mathbb{R}^N$(对每个节点来说是一个标量)乘以傅里叶域的滤波器$g_\theta=\text{diag}(\theta), \theta\in\mathbb{R}^N$,即：
+谱图卷积是这样定义的：信号$x\in\mathbb{R}^N$(对每个节点来说是一个标量，可以看成是节点的标签)通过一个傅里叶域的滤波器$g_\theta=\text{diag}(\theta), \theta\in\mathbb{R}^N$得到的结果，即：
 
 $$
 g_{\theta} \star x=U g_{\theta} U^{\top} x
 $$
 
-归一化的图拉普拉斯(normalized graph Laplacian)表示为 $L=I_{N}-D^{-\frac{1}{2}} A D^{-\frac{1}{2}}=U \Lambda U^{\top}$。$U$是$L$的特征向量矩阵，而$\Lambda$是对应的特征值矩阵(特征值在对角线上)，$U^\top x$是$x$在图上的傅里叶变换。我们能将$g_\theta$理解为$L$特征值的一个函数，即$g_\theta(\Lambda)$。上面的等式算起来非常耗时，因为特征向量矩阵的乘法是$\mathcal{O}(N^2)$阶的。再者，$L$的特征分解在大图上也很低效。为了克服这样的问题 [Hammond et al. (2011)](https://hal.inria.fr/inria-00541855/document)指出$g_{\theta}(\Lambda)$能够被切比雪夫多项式(Chebyshev polynomials) $T_k(x)$所近似，$K$阶多项式就能达到很好的近似效果：
+左式表示信号$x$经傅里叶域滤波器$g_\theta$变换，右边是将这个变换过程用矩阵的乘法表示。这里要引入一个叫归一化的图拉普拉斯矩阵(normalized graph Laplacian)的概念，它可以表示为 $L=I_{N}-D^{-\frac{1}{2}} A D^{-\frac{1}{2}}=U \Lambda U^{\top}$，其中$U$是$L$的特征向量矩阵，而$\Lambda$是对应的特征值矩阵(特征值在对角线上)，$U^\top x$是$x$在图上的傅里叶变换。我们能将$g_\theta$理解为$L$特征值的一个函数，即$g_\theta(\Lambda)$。上面的等式算起来非常耗时，因为特征向量矩阵的乘法是$\mathcal{O}(N^2)$阶的。再者，$L$的特征分解在大图上也很低效。为了克服这样的问题 [Hammond et al. (2011)](https://hal.inria.fr/inria-00541855/document)指出$g_{\theta}(\Lambda)$能够被切比雪夫多项式(Chebyshev polynomials) $T_k(x)$所近似，$K$阶多项式就能达到很好的近似效果：
 
 $$
 g_{\theta^{\prime}}(\Lambda) \approx \sum_{k=0}^{K} \theta_{k}^{\prime} T_{k}(\tilde{\Lambda})
@@ -72,12 +76,12 @@ $$
 g_{\theta^{\prime}} \star x \approx \sum_{k=0}^{K} \theta_{k}^{\prime} T_{k}(\tilde{L}) x
 $$
 
-其中$$\tilde{L}=\frac{2}{\lambda_{\max}}L-I_N$$, 这个表达式现在是K-localized因为我们仅用K阶切比雪夫多项式近似$g_\theta(\Lambda)$。即每个节点只受$K$步以内的其他节点影响，评估上式的时间复杂度是 $$\mathcal{O}(\vert\mathcal{E}\vert)$$ , 即线性于边的数量。[Defferrard et al.2016](https://arxiv.org/abs/1606.09375) 使用 K-localized 卷积定义图上的卷积操作。
+其中$$\tilde{L}=\frac{2}{\lambda_{\max}}L-I_N$$, 这个表达式现在是K-localized的，因为我们仅用$K$阶切比雪夫多项式近似$g_\theta(\Lambda)$。即每个节点只受$K$步以内的其他节点影响，评估上式的时间复杂度是 $$\mathcal{O}(\vert\mathcal{E}\vert)$$ , 即线性于边的数量。[Defferrard et al.2016](https://arxiv.org/abs/1606.09375) 使用 K-localized 卷积定义图上的卷积操作。
 
 ### 逐层线性模型
 现在假设我们限制$K=1$，即谱图卷积近似为一个关于$L$的线性函数。这种情况下，我们仍能通过堆叠多层来得到卷积的能力，但是这时候，我们不再受限于切比雪夫多项式参数的限制。我们期望这样的模型能够缓解当图中节点度分布差异较大时对局部结构过拟合问题，比如社交网络，引文网络，知识图谱等。另一方面，从计算的角度考虑，逐层线性模型使我们可以构建更深的模型。
 
-在GCN模型中， 我们做了另一个近似$$\lambda_{\max}\approx 2$$, 我们期望神经网络的参数能够在训练过程中适应这种变化。在这些近似的条件下，我们得到：
+在GCN模型中， 我们做了另一个近似$$\lambda_{\max}\approx 2$$, 我们期望神经网络的参数能够在训练过程中适应这种人为设定的近似。在这些近似的条件下，我们得到：
 
 $$
 g_{\theta^{\prime}} \star x \approx \theta_{0}^{\prime} x+\theta_{1}^{\prime}\left(L-I_{N}\right) x=\theta_{0}^{\prime} x-\theta_{1}^{\prime} D^{-\frac{1}{2}} A D^{-\frac{1}{2}} x
@@ -91,7 +95,7 @@ $$
 
 注意$I_{N}+D^{-\frac{1}{2}} A D^{-\frac{1}{2}}$的特征值现在被限制在了$[0, 2]$中。重复这样的操作将会导致数值不稳定、梯度弥散/爆炸等问题。为了缓解这样的问题，我们引入了这样的再正则化(renormalization)技巧：$I_{N}+D^{-\frac{1}{2}} A D^{-\frac{1}{2}} \rightarrow \tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}}$，其中$$\tilde{A}=A+I_{N}, \tilde{D}_{i i}=\sum_{j} \tilde{A}_{i j}$$
 
-我们把上述定义进一步泛化：输入信号$X\in \mathbb{R}^{N\times C}$, 每个输入信号有$C$个通道(channels, 即每个图节点有$C$维特征)，卷积包含$F$个滤波器(filters)或特征映射(feature maps), 如下：
+我们把上述定义进一步泛化：输入信号$X\in \mathbb{R}^{N\times C}$, 每个输入信号有$C$个通道(channels), 即每个图有$N$个节点，每个节点有$C$维特征，图上的卷积操作包含$F$个滤波器(filters)或特征映射(feature maps)，如下：
 
 $$
 Z=\tilde{D}^{-\frac{1}{2}} \tilde{A} \tilde{D}^{-\frac{1}{2}} X \Theta
@@ -106,6 +110,8 @@ $$
 
 
 
+再次说明一下，上面的推导看起来复杂而不详细，这是故意而为之的，GCN的理论推导理论性很强且复杂，如果再次长篇大论很容易就打消了大家学习GNN的兴趣，因此我们特意把它安排到了几个专栏文章的后面，待大家熟悉了GNN的常见模型之后再介绍详细的推导更容易接受和理解，所以如果对上面的推导看得一知半解也没有关系，主要记住$H^{(l+1)}=\sigma\left(\tilde{D}^{-\frac{1}{2}}\tilde{A} \tilde{D}^{-\frac{1}{2}}H^{(l)}W^{(l)}\right)$这个逐层传播公式就可以了。
+
 ## 半监督学习节点分类
 
 ## 传播公式解释
@@ -116,6 +122,8 @@ H^{(l+1)}=\sigma\left(\tilde{D}^{-\frac{1}{2}}\tilde{A} \tilde{D}^{-\frac{1}{2}}
 $$
 
 首先我对这个公式做一下形象的解释：**每个节点拿到邻居节点信息然后聚合到自身embedding上**。在上面的公式中$D^{-\frac{1}{2}}\tilde{A}D^{-\frac{1}{2}}$可以看成是归一化后的邻接矩阵，$H^{(l)}W^{(l)}$相当于给$l$层所有节点的embedding做了一次线性变换，左乘邻接矩阵表示对于每个节点来说，该节点的特征变为邻居节点特征相加后的结果。
+
+这个形象的解释对理解GNN非常重要，希望大家能仔细想一下是不是懂了。
 
 ### 例子
 
@@ -131,7 +139,7 @@ $$
 \mathcal{L}=-\sum_{l \in \mathcal{Y}_{L}} \sum_{f=1}^{F} Y_{l f} \ln Z_{l f}\tag{10}
 $$
 
-这里$Y_L$是所有带标签节点的集合。最后通过利用梯度下降法训练神经网络权重$W^{(0)}$和$W^{(1)}$ 就可以了。
+这里$\mathcal{Y}_L$是所有带标签节点的集合。最后通过利用梯度下降法训练神经网络权重$W^{(0)}$和$W^{(1)}$ 就可以了。
 
 
 ## 后话
