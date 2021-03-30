@@ -24,4 +24,8 @@ Check my [Resume](https://github.com/archwalker/archwalker.github.io/blob/master
 
 Ao Li\*, __Zhou Qin\*__, Runshi Liu, Yiqun Yang, and Dong Li. [**Spam Review Detection with Graph Convolutional Networks**](https://arxiv.org/abs/1908.10679) [CIKM 2019, **Best Applied Research Paper Award**, \*Equal Contribution]
 
+谢文睿，秦州 [《机器学习公式详解》](https://book.douban.com/subject/35381195/)人民邮电出版社，2021-03-01，ISBN：9787115559104
+
+
+
 
