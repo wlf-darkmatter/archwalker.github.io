@@ -30,7 +30,6 @@ Check my [Resume](https://github.com/archwalker/archwalker.github.io/blob/master
 
 **Talks**
 
-1. 20210416 由机器之心、人民邮电出版社和Datawhale主持的关于机器学习如何入门的讲座。 视频地址：[机器学习如何入门](https://www.bilibili.com/video/av757572959/) 
-
+1. 20210716 央视网、新华社等媒体转发的高中毕业生就业人工智能专业选择指导。视频地址：[关于人工智能专业选择和就业](https://weibo.com/3266943013/KoG3vddrt)
 2. 20210417 关于一些我的工作和生活的视频。 视频地址：[算法工程师的一天](https://www.bilibili.com/video/BV1u5411c7p1)
-
+3. 20210416 由机器之心、人民邮电出版社和Datawhale主持的关于机器学习如何入门的讲座。 视频地址：[机器学习如何入门](https://www.bilibili.com/video/av757572959/) 
