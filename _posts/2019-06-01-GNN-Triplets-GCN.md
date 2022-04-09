@@ -21,7 +21,7 @@ $$
 \mathcal{L}=\mathcal{L}_{labeled}+\lambda \mathcal{L}_{\mathrm{reg}} \tag{1}
 $$
 
-其中， $$\mathcal{L}_{labeled}$$ 基于基于标签数据的损失函数（loss function），$$\mathcal{L}_{reg}$$ 代表基于图结构信息的损失函数，$\lambda$ 是调节这两种损失函数相对重要性的超参（hyperparameter）。
+其中， $$\mathcal{L}_{labeled}$$ 代表基于标签数据的损失函数（loss function），$$\mathcal{L}_{reg}$$ 代表基于图结构信息的损失函数，$\lambda$ 是调节这两种损失函数相对重要性的超参（hyperparameter）。
 
 一般来说，基于图结构信息的损失函数可以表示成：
 $$
